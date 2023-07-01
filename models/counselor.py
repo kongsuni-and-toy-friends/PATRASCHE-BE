@@ -1,57 +1,59 @@
 from db import db
+from .child import ChildModel
+import json
 
 class CounselorModel(db.Model):
-    __tablename__ = 'counselors'
+    __tablename__ = 'counselor'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_subname = db.Column(db.String(80))
+    email = db.Column(db.String(80))
     password = db.Column(db.String(80))
-    user_name = db.Column(db.String(80))
-    user_type = db.Column(db.String(80))  # 0-parents 1-counseller 2-individual
+    name = db.Column(db.String(80))
+    phone = db.Column(db.String(80))
+    gender = db.Column(db.String(80))
+    address = db.Column(db.String(80))
+    address_range = db.Column(db.String(80))
+    intro_title = db.Column(db.String(80))
+    intro_content = db.Column(db.String(80))
+    thumbnail = db.Column(db.String(80))
+    provider = db.Column(db.String(80))
+    birth = db.Column(db.Datetime)
 
-    brief_desc = db.Column(db.String(80))
-    profile = db.Column(db.String(80))
-    available_begin = db.Column(db.String(80))
-    available_end = db.Column(db.String(80))
+    created_at = db.Column(db.Datetime)
 
-    available = db.Column(db.Boolean())
+    categories = db.relationship('CategoryModel', backref='counselor')
+    available_times = db.relationship('AvailableTimeModel', backref='counselor')
+    careers = db.relationship('CareerModel', backref='counselor')
+    licenses = db.relationship('LicenseModel', backref='counselor')
+    pre_reservations = db.relationship('PreReservationModel', backref='counselor')
+    post_reservations = db.relationship('PostReservationModel', backref='counselor')
+    reviews = db.relationship('ReviewModel', backref='counselor')
+    #childs = db.relationship('ChildModel', backref='user')
+    # reservations = db.relationship('ReservationModel', backref='users')
 
-    childs = db.relationship('ChildModel', backref='counselors')
-    index_page = db.relationship("IndexPageModel", backref="counselors")
-    reservations = db.relationship('ReservationModel', backref='counselors')
-
-    def __init__(self, user_name, user_subname, password, breif_desc,available_begin,available_end):
-        self.user_subname = user_subname
-        self.user_name = user_name
-        self.password = password
-        self.user_type = "counselor"
-        self.available = True
-        self.brief_desc = breif_desc
-        self.available_begin = available_begin
-        self.available_end = available_end
+    def __init__(self, _name,_phone,_email,_gender,_address,_address_range,_intro_title,_intro_content,_thumbnail,_created_at,_password="",_provider=""):
+        self.email = _email
+        self.password = _password
+        self.name = _name
+        self.phone = _phone
+        self.gender = _gender
+        self.address = _address
+        self.address_range = _address_range
+        self.intro_title = _intro_title
+        self.intro_content = _intro_content
+        self.thumbnail = _thumbnail
+        self.provider = _provider
+        self.created_at = _created_at
 
     def json(self):
-        return {'info':
-            {
-                'id': self.id,
-                'user_subname': self.user_subname,
-                'user_name': self.user_name,
-                'user_type': self.user_type,
-                'thumbnail': self.profile
+        return {
+                'id':self.id,
+                'name':self.name,
+                'user_name':self.user_name,
+                'user_type':self.user_type,
+                'thumbnail':self.user_profile
             }
-        }
 
-    @classmethod
-    def find_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
-
-    @classmethod
-    def find_by_username(cls, user_name):
-        return cls.query.filter_by(user_name=user_name).first()
-
-    @classmethod
-    def find_all(cls):
-        return cls.query.filter_by(available=True).all()
 
     def save_to_db(self):
         db.session.add(self)
@@ -60,3 +62,15 @@ class CounselorModel(db.Model):
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
+
+    # def save_child_data(self,child_name,child_age,child_gender,serial_number):
+    #     child = ChildModel(self.id,child_name,child_age,child_gender,serial_number)
+    #     child.save_to_db()
+
+    @classmethod
+    def find_by_useremail(cls, user_email):
+        return cls.query.filter_by(email=user_email).first()
+
+    @classmethod
+    def find_by_id(cls, _id):
+        return cls.query.filter_by(id=_id).first()

@@ -2,25 +2,20 @@ from db import db
 from . import and_
 
 class ChatModel(db.Model):
-    __tablename__ = 'chats'
+    __tablename__ = 'record_chat'
 
     id = db.Column(db.Integer, primary_key=True)
-    date_YMD = db.Column(db.String(80))
-    date_YMDHMS = db.Column(db.String(80))
-    date_Time = db.Column(db.String(80))
-    direction = db.Column(db.String(80))#0-user #1-chatbot
+    date = db.Column(db.Datetime)
+    chatter = db.Column(db.String(80))
     utterance = db.Column(db.String(80))
 
-    child_id = db.Column(db.Integer, db.ForeignKey('childs.id'))
+    record_id = db.Column(db.Integer, db.ForeignKey('child_record.id'))
 
-    def __init__(self, child_id, date_YMD, date_YMDHMS,date_Time, direction, utterance):
-        self.date_YMD = date_YMD
-        self.date_YMDHMS = date_YMDHMS
-        self.date_Time = date_Time
-        self.direction = direction
-        self.utterance = utterance
-
-        self.child_id = child_id
+    def __init__(self, _record_id, _date, _chatter,_utterance):
+        self.record_id = _record_id
+        self.date = _date
+        self.chatter = _chatter
+        self.utterance = _utterance
 
     def json(self):
         return {'day': self.date_YMD,'time': self.date_Time, 'direction': self.direction,'utterance':self.utterance}

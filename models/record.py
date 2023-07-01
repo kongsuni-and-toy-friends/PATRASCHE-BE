@@ -2,28 +2,24 @@ from db import db
 from . import and_
 
 
-class ChildModel(db.Model):
-    __tablename__ = 'user_child'
+class RecordModel(db.Model):
+    __tablename__ = 'child_record'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
-    birth = db.Column(db.Datetime)
-    gender = db.Column(db.String(80))
-    thumbnail = db.Column(db.String(80))
+    date = db.Column(db.Datetime)
+    start_time = db.Column(db.Datetime)
+    end_time = db.Column(db.Datetime)
+    live = db.Column(db.Boolean)
 
-    created_at = db.Column(db.Datetime)
+    child_id = db.Column(db.Integer, db.ForeignKey('user_child.id'))
+    chats = db.relationship('ChatModel', backref='child_record')
+    # statistics = db.relationship('StatisticModel', backref='childs')
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    records = db.relationship('RecordModel', backref='user_child')
-    dolls = db.relationship('DollModel', backref='user_child')
-
-    def __init__(self,_user_id,_name,_birth,_gender,_thumbnail,_created_at):
-        self.user_id = _user_id
-        self.name = _name
-        self.birth = _birth
-        self.gender = _gender
-        self.thumbnail = _thumbnail
-        self.created_at = _created_at
-
+    def __init__(self,_child_id,_date,_start,_end,_live):
+        self.child_id = _child_id
+        self.date = _date
+        self.start_time = _start
+        self.end_time = _end
+        self.live = _live
 
     def json(self):
         return {'info':
