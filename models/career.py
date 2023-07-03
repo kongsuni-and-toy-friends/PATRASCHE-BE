@@ -2,28 +2,28 @@ from db import db
 from . import and_
 
 
-class ChildModel(db.Model):
-    __tablename__ = 'user_child'
+class CareerModel(db.Model):
+    __tablename__ = 'counselor_career'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
-    birth = db.Column(db.Datetime)
-    gender = db.Column(db.String(80))
-    thumbnail = db.Column(db.String(80))
+    start_date = db.Column(db.Datetime)
+    end_date = db.Column(db.Datetime)
+    type = db.Column(db.String(80))
+    role = db.Column(db.String(80))
+    cert = db.Column(db.String(80))
 
-    created_at = db.Column(db.Datetime)
+    counselor_id = db.Column(db.Integer, db.ForeignKey('counselor.id'))
+    #chats = db.relationship('ChatModel', backref='child_record')
+    # statistics = db.relationship('StatisticModel', backref='childs')
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    records = db.relationship('RecordModel', backref='user_child')
-    dolls = db.relationship('DollModel', backref='user_child')
-
-    def __init__(self,_user_id,_name,_birth,_gender,_thumbnail,_created_at):
-        self.user_id = _user_id
+    def __init__(self,_name,_start_date,_type,_role,_cert,_counselor_id,_end_date=None):
         self.name = _name
-        self.birth = _birth
-        self.gender = _gender
-        self.thumbnail = _thumbnail
-        self.created_at = _created_at
-
+        self.start_date = _start_date
+        self.end_date = _end_date
+        self.type = _type
+        self.role = _role
+        self.cert = _cert
+        self.counselor_id = _counselor_id
 
     def json(self):
         return {'info':

@@ -2,28 +2,24 @@ from db import db
 from . import and_
 
 
-class ChildModel(db.Model):
-    __tablename__ = 'user_child'
+class AvailableTimeModel(db.Model):
+    __tablename__ = 'counselor_availabletime'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
-    birth = db.Column(db.Datetime)
-    gender = db.Column(db.String(80))
-    thumbnail = db.Column(db.String(80))
+    day = db.Column(db.String(80))
+    start_time = db.Column(db.Datetime)
+    end_time = db.Column(db.Datetime)
+    interval = db.Column(db.Integer)
 
-    created_at = db.Column(db.Datetime)
+    counselor_id = db.Column(db.Integer, db.ForeignKey('counselor.id'))
+    #chats = db.relationship('ChatModel', backref='child_record')
+    # statistics = db.relationship('StatisticModel', backref='childs')
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    records = db.relationship('RecordModel', backref='user_child')
-    dolls = db.relationship('DollModel', backref='user_child')
-
-    def __init__(self,_user_id,_name,_birth,_gender,_thumbnail,_created_at):
-        self.user_id = _user_id
-        self.name = _name
-        self.birth = _birth
-        self.gender = _gender
-        self.thumbnail = _thumbnail
-        self.created_at = _created_at
-
+    def __init__(self,_day,_start_time,_end_time,_interval,_counselor_id):
+        self.day = _day
+        self.start_time = _start_time
+        self.end_time = _end_time
+        self.interval = _interval
+        self.counselor_id = _counselor_id
 
     def json(self):
         return {'info':

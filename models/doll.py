@@ -2,28 +2,18 @@ from db import db
 from . import and_
 
 
-class ChildModel(db.Model):
-    __tablename__ = 'user_child'
+class DollModel(db.Model):
+    __tablename__ = 'child_doll'
     id = db.Column(db.Integer, primary_key=True)
+    pin = db.Column(db.String(80))
     name = db.Column(db.String(80))
-    birth = db.Column(db.Datetime)
-    gender = db.Column(db.String(80))
-    thumbnail = db.Column(db.String(80))
 
-    created_at = db.Column(db.Datetime)
+    child_id = db.Column(db.Integer, db.ForeignKey('user_child.id'))
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    records = db.relationship('RecordModel', backref='user_child')
-    dolls = db.relationship('DollModel', backref='user_child')
-
-    def __init__(self,_user_id,_name,_birth,_gender,_thumbnail,_created_at):
-        self.user_id = _user_id
+    def __init__(self,_child_id,_pin,_name):
+        self.child_id = _child_id
+        self.pin = _pin
         self.name = _name
-        self.birth = _birth
-        self.gender = _gender
-        self.thumbnail = _thumbnail
-        self.created_at = _created_at
-
 
     def json(self):
         return {'info':
