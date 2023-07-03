@@ -1,3 +1,4 @@
+from flask import make_response
 from flask_restx import Resource, reqparse
 from hmac import compare_digest
 from flask_jwt_extended import (
@@ -22,7 +23,7 @@ class UserKakao(Resource):
 
     token_server = "https://kauth.kakao.com/oauth/token"
     restapi_key = "30be85e022d05515820202ecfdc05f9f"
-    redirect_url = "http://localhost:5173"
+    redirect_url = "http://localhost:5173/kakao"
     userme_url = "https://kapi.kakao.com/v2/user/me"
     client_secret = "CU8A7GzamnuZmc67H3l8ptZ3jdHJK0Et"
 
@@ -72,19 +73,24 @@ class UserKakao(Resource):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
 
-            return {
+            resp = make_response({
                "registered":True,
                "access": access_token,
                "refresh": refresh_token,
-            }, 200
+            })
+            resp.headers['Access-Control-Allow-Origin'] = '*'
+            return resp
         else :
-            return {
+            resp = make_response({
                 "registered": False,
                 "email": email,
-                'nickname':name,
-                'birthday':birthday,
-                'gender':gender
-                   }, 201
+                'nickname': name,
+                'birthday': birthday,
+                'gender': gender
+
+            })
+            resp.headers['Access-Control-Allow-Origin'] = '*'
+            return resp
 
 class UserRegister(Resource):
     _user_parser = reqparse.RequestParser()

@@ -11,7 +11,7 @@ from db import db
 #db_name = config['DEFAULT']['DB_NAME']+'.db'
 
 host = "0.0.0.0"
-port = 5173
+port = 5000
 
 SECRET_KEY = "chan"
 db_name="chatbot"
@@ -24,7 +24,7 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = "chan"
 api = Api(app) #API FLASK SERVER
 
-CORS(app)
+
 sock = SocketIO(app,cors_allowed_origins="*")
 #this will be used for login(authenticate users)
 jwt = JWTManager(app) #this will make endpoint named '/auth' (username,password)
@@ -77,7 +77,8 @@ def health():
 
 create_api(api)
 # create_socketio(sock)
-
+# CORS(sock)
+CORS(app)
 if __name__ == "__main__":
 
     db.init_app(app)
