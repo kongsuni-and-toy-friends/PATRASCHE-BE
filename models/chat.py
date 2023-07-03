@@ -5,7 +5,7 @@ class ChatModel(db.Model):
     __tablename__ = 'record_chat'
 
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.Datetime)
+    date = db.Column(db.DateTime)
     chatter = db.Column(db.String(80))
     utterance = db.Column(db.String(80))
 

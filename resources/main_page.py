@@ -78,8 +78,3 @@ class MainBanner(Resource):
 
         return child.json(), 201
 
-class ChildList(Resource):
-    def get(self):
-        user_id = 1
-        childs = [child.json() for child in ChildModel.find_all_with_user_id(user_id)]
-        return {'childs': childs}

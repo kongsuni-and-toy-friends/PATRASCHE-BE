@@ -9,8 +9,8 @@ class DegreeModel(db.Model):
     name = db.Column(db.String(80))
     subject = db.Column(db.String(80))
     major = db.Column(db.String(80))
-    entrance = db.Column(db.Datetime)
-    graduation = db.Column(db.Datetime)
+    entrance = db.Column(db.DateTime)
+    graduation = db.Column(db.DateTime)
     type = db.Column(db.String(80))
     cert = db.Column(db.String(80))
 

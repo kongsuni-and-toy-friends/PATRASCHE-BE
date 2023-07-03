@@ -17,9 +17,9 @@ class CounselorModel(db.Model):
     intro_content = db.Column(db.String(80))
     thumbnail = db.Column(db.String(80))
     provider = db.Column(db.String(80))
-    birth = db.Column(db.Datetime)
+    birth = db.Column(db.DateTime)
 
-    created_at = db.Column(db.Datetime)
+    created_at = db.Column(db.DateTime)
 
     categories = db.relationship('CategoryModel', backref='counselor')
     available_times = db.relationship('AvailableTimeModel', backref='counselor')

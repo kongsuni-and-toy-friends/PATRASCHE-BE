@@ -6,8 +6,8 @@ class AvailableTimeModel(db.Model):
     __tablename__ = 'counselor_availabletime'
     id = db.Column(db.Integer, primary_key=True)
     day = db.Column(db.String(80))
-    start_time = db.Column(db.Datetime)
-    end_time = db.Column(db.Datetime)
+    start_time = db.Column(db.DateTime)
+    end_time = db.Column(db.DateTime)
     interval = db.Column(db.Integer)
 
     counselor_id = db.Column(db.Integer, db.ForeignKey('counselor.id'))

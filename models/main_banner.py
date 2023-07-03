@@ -10,7 +10,7 @@ class MainBannerModel(db.Model):
     link_to = db.Column(db.String(80))
     priority = db.Column(db.Integer)
 
-    created_at = db.Column(db.Datetime)
+    created_at = db.Column(db.DateTime)
 
     def __init__(self,_name,_thumbnail,_link_to,_priority,_created_at):
         self.name = _name

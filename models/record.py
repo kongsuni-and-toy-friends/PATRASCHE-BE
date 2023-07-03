@@ -5,9 +5,9 @@ from . import and_
 class RecordModel(db.Model):
     __tablename__ = 'child_record'
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.Datetime)
-    start_time = db.Column(db.Datetime)
-    end_time = db.Column(db.Datetime)
+    date = db.Column(db.DateTime)
+    start_time = db.Column(db.DateTime)
+    end_time = db.Column(db.DateTime)
     live = db.Column(db.Boolean)
 
     child_id = db.Column(db.Integer, db.ForeignKey('user_child.id'))
