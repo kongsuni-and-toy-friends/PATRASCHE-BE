@@ -82,6 +82,6 @@ CORS(app,supports_credentials=True)
 if __name__ == "__main__":
 
     db.init_app(app)
-    #app.run(host=host,port=port,debug=True) #debug tells us what is problem
+    app.run(host=host,port=port,debug=True) #debug tells us what is problem
     print("Now we Run...")
-    sock.run(app,host=host,port=port,debug=False)
+    #sock.run(app,host=host,port=port,debug=False)

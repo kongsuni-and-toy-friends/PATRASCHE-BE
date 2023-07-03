@@ -89,6 +89,7 @@ class UserKakao(Resource):
             resp.headers['Access-Control-Allow-Origin'] = '*'
             return resp
         else :
+            print("GO ahead")
             resp = make_response({
                 "registered": False,
                 "email": email,
