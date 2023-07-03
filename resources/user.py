@@ -49,8 +49,16 @@ class UserKakao(Resource):
         )
 
         print(response.text)
-        access_token = json.loads(((response.text).encode('utf-8')))['access_token']
-        print(access_token)
+        try:
+            access_token = json.loads(((response.text).encode('utf-8')))['access_token']
+            print(access_token)
+        except :
+            print("No token")
+            resp = make_response({
+                "message":"Invaild token"
+            })
+            resp.headers['Access-Control-Allow-Origin'] = '*'
+            return resp
 
         response = requests.get(
             url = UserKakao.userme_url,

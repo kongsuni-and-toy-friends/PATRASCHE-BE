@@ -11,7 +11,7 @@ from db import db
 #db_name = config['DEFAULT']['DB_NAME']+'.db'
 
 host = "0.0.0.0"
-port = 5000
+port = 5173
 
 SECRET_KEY = "chan"
 db_name="chatbot"
@@ -78,7 +78,7 @@ def health():
 create_api(api)
 # create_socketio(sock)
 # CORS(sock)
-CORS(app)
+CORS(app,supports_credentials=True)
 if __name__ == "__main__":
 
     db.init_app(app)
