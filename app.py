@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from flask_restx import Api
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
 from resources import create_api, create_socketio
@@ -10,7 +11,7 @@ from db import db
 #db_name = config['DEFAULT']['DB_NAME']+'.db'
 
 host = "0.0.0.0"
-port = 5000
+port = 5173
 
 SECRET_KEY = "chan"
 db_name="chatbot"
@@ -23,6 +24,7 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = "chan"
 api = Api(app) #API FLASK SERVER
 
+CORS(app)
 sock = SocketIO(app,cors_allowed_origins="*")
 #this will be used for login(authenticate users)
 jwt = JWTManager(app) #this will make endpoint named '/auth' (username,password)
