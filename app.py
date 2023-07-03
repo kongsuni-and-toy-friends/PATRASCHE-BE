@@ -69,9 +69,9 @@ jwt = JWTManager(app) #this will make endpoint named '/auth' (username,password)
 def health():
     return "OK"
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
+# @app.before_first_request
+# def create_tables():
+#     db.create_all()
 
 create_api(api)
 # create_socketio(sock)
