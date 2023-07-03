@@ -1,4 +1,4 @@
-from flask_restful import Resource, reqparse
+from flask_restx import Resource, reqparse
 from hmac import compare_digest
 from flask_jwt_extended import (
     create_access_token,
@@ -6,8 +6,85 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required
 )
+import json
+import requests
 from models import UserModel
 from models import CounselorModel
+
+
+class UserKakao(Resource):
+    _parser = reqparse.RequestParser()
+    _parser.add_argument('code',
+                         type=str,
+                         required=True,
+                         help="This field cannot be blank."
+                         )
+
+    token_server = "https://kauth.kakao.com/oauth/token"
+    restapi_key = "30be85e022d05515820202ecfdc05f9f"
+    redirect_url = "http://localhost:5173"
+    userme_url = "https://kapi.kakao.com/v2/user/me"
+    client_secret = "CU8A7GzamnuZmc67H3l8ptZ3jdHJK0Et"
+
+    def post(self):
+
+        print("hello")
+        code_data = UserKakao._parser.parse_args()
+        code = code_data["code"]
+
+        response = requests.post(
+            url = UserKakao.token_server,
+            headers={
+                'Content-Type':"application/x-www-form-urlencoded",
+                'Cache-Control':"no-cache"
+            },
+            data = {
+                "grant_type": "authorization_code",
+                "client_id": UserKakao.restapi_key,
+                "client_secret": UserKakao.client_secret,
+                "redirect_uri": UserKakao.redirect_url,
+                "code": code,
+            }
+        )
+
+        print(response.text)
+        access_token = json.loads(((response.text).encode('utf-8')))['access_token']
+        print(access_token)
+
+        response = requests.get(
+            url = UserKakao.userme_url,
+            headers={
+                'Authorization' : f"Bearer ${access_token}"
+            }
+        )
+        user_data = json.loads(((response.text).encode('utf-8')))['kakao_account']
+        user_profile = user_data['profile']
+
+        print(user_data)
+        name = user_profile['nickname']
+        email = user_data["email"]
+        birthday = user_data["birthday"]
+        gender = user_data['gender']
+
+        user = UserModel.find_by_useremail(email)
+
+        if user:
+            access_token = create_access_token(identity=user.id, fresh=True)
+            refresh_token = create_refresh_token(user.id)
+
+            return {
+               "registered":True,
+               "access": access_token,
+               "refresh": refresh_token,
+            }, 200
+        else :
+            return {
+                "registered": False,
+                "email": email,
+                'nickname':name,
+                'birthday':birthday,
+                'gender':gender
+                   }, 201
 
 class UserRegister(Resource):
     _user_parser = reqparse.RequestParser()
@@ -41,6 +118,8 @@ class UserRegister(Resource):
         user = UserModel(data['user_name'],data['user_subname'],data['password'],data['user_type'])
         user.save_to_db()
         return {"message": "User created successfully."}, 201
+
+
 
 
 class User(Resource):

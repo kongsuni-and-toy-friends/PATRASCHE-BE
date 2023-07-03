@@ -5,9 +5,9 @@ from . import and_
 class PreReservationModel(db.Model):
     __tablename__ = 'pre_reservation'
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.Datetime)
+    date = db.Column(db.DateTime)
     problem = db.Column(db.String(80))
-    start_time = db.Column(db.Datetime)
+    start_time = db.Column(db.DateTime)
     state = db.Column(db.String(80))
 
     counselor_id = db.Column(db.Integer, db.ForeignKey('counselor.id'))

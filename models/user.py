@@ -10,12 +10,12 @@ class UserModel(db.Model):
     email = db.Column(db.String(80))
     gender = db.Column(db.String(80))
     password = db.Column(db.String(80))
-    birth = db.Column(db.Datetime)
+    birth = db.Column(db.DateTime)
     thumbnail = db.Column(db.String(80))
     provider = db.Column(db.String(80))
     phone = db.Column(db.String(80))
 
-    created_at = db.Column(db.Datetime)
+    created_at = db.Column(db.DateTime)
 
     childs = db.relationship('ChildModel', backref='user')
     pre_reservations = db.relationship('PreReservationModel', backref='user')

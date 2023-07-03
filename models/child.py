@@ -6,11 +6,11 @@ class ChildModel(db.Model):
     __tablename__ = 'user_child'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
-    birth = db.Column(db.Datetime)
+    birth = db.Column(db.DateTime)
     gender = db.Column(db.String(80))
     thumbnail = db.Column(db.String(80))
 
-    created_at = db.Column(db.Datetime)
+    created_at = db.Column(db.DateTime)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     records = db.relationship('RecordModel', backref='user_child')

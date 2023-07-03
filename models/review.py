@@ -6,7 +6,7 @@ class ReviewModel(db.Model):
     __tablename__ = 'counselor_review'
     id = db.Column(db.Integer, primary_key=True)
     score = db.Column(db.Float)
-    date = db.Column(db.Datetime)
+    date = db.Column(db.DateTime)
     thumbnail = db.Column(db.String(80))
     content = db.Column(db.String(80))
 

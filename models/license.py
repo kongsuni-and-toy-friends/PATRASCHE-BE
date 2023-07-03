@@ -6,7 +6,7 @@ class LicenseModel(db.Model):
     __tablename__ = 'counselor_license'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
-    date = db.Column(db.Datetime)
+    date = db.Column(db.DateTime)
     cert = db.Column(db.String(80))
     organization = db.Column(db.String(80))
 

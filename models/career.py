@@ -6,8 +6,8 @@ class CareerModel(db.Model):
     __tablename__ = 'counselor_career'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
-    start_date = db.Column(db.Datetime)
-    end_date = db.Column(db.Datetime)
+    start_date = db.Column(db.DateTime)
+    end_date = db.Column(db.DateTime)
     type = db.Column(db.String(80))
     role = db.Column(db.String(80))
     cert = db.Column(db.String(80))
