@@ -152,10 +152,10 @@ class UserRegister(Resource):
             data['name'],
             data['email'],
             data['gender'],
-            data['birth'],
+            datetime.datetime.strptime(data['birth'],"%Y-%m-%d"),
             datetime.datetime.now(),
             data['phone'],
-            data['address'],
+            data['address']
         )
         if data["pw"] != "":
             user.password = data['pw']

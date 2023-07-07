@@ -8,14 +8,17 @@ def create_api(api):
     from .reservation import PreReservation, PostReservation, MakeReservation
     from .v2.auth import CounselorRegister, CounselorApprove, CounselorProfile, CounselorLogin, CounselorKakao, CounselorDupCheck
     from .v2.reservation import V2PreReservation,V2PreReservationInfo
-
+    from .develop.develop import MakeMock
+    from .mypage import EnrollChild
     # from main_page import MainBanner
     # from .chat import RangeChatList, AllChatList,YMDChatList,NumberChatList
 
     # from .reservations import GetCounselors, GetPageInfo,MakeReservation,\
     #     GetUserReservation,GetCounselorReservation, AcceptReservation, RejectReservation,CancleReservation
 
-
+    # develop namespace
+    ns_develop = api.namespace('develop')
+    ns_develop.add_resource(MakeMock,'/make_mock')
 
     # auth namespace
     ns_auth = api.namespace('auth')
@@ -59,6 +62,10 @@ def create_api(api):
     ns_counselor.add_resource(MakeReservation, '/<int:counselor_id>')
     ns_counselor.add_resource(PreReservation, '/pre')
     ns_counselor.add_resource(PostReservation, '/post')
+
+    # mypage namespace
+    ns_mypage = api.namespace('mypage')
+    ns_mypage.add_resource(EnrollChild, '/enroll')
 
     # v2 auth namespace
     # #ns_auth.add_resource(UserKakao, '/kakao')

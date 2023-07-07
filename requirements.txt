@@ -1,4 +1,3 @@
-setuptools
 Flask
 Flask-JWT-extended
 Flask-RESTful
@@ -6,8 +5,7 @@ Flask-SQLAlchemy
 Flask-SocketIO
 Flask-Cors
 Flask-Bcrypt
-gdown
-h5py
+Flask-restx
 pandas
 numpy
 tqdm
