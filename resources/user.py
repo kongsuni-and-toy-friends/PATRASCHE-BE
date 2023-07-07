@@ -115,7 +115,7 @@ class UserRegister(Resource):
                               help="This field cannot be blank."
                               )
     _parser.add_argument('birth',
-                            type=lambda x: datetime.datetime.strptime("%Y-%m-%d"),
+                            type=lambda x: datetime.datetime.strptime(x,"%Y-%m-%d"),
                             required=True,
                             help="This field cannot be blank."
                             )
@@ -148,11 +148,20 @@ class UserRegister(Resource):
     def post(self):
         data = UserRegister._parser.parse_args()
 
+        user = UserModel.find_by_useremail(data['email'])
+
+        if user:
+            resp = make_response({
+                "message": f"Email {data['email']} had been taken!"
+            })
+            resp.headers['Access-Control-Allow-Origin'] = '*'
+            return resp
+
         user = UserModel(
             data['name'],
             data['email'],
             data['gender'],
-            datetime.datetime.strptime(data['birth'],"%Y-%m-%d"),
+            data['birth'],
             datetime.datetime.now(),
             data['phone'],
             data['address']

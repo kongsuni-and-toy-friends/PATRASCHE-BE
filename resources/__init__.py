@@ -67,6 +67,7 @@ def create_api(api):
     ns_mypage = api.namespace('mypage')
     ns_mypage.add_resource(EnrollChild, '/enroll')
 
+
     # v2 auth namespace
     # #ns_auth.add_resource(UserKakao, '/kakao')
     # ns_auth.add_resource(UserRegister, '/register')

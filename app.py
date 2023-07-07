@@ -69,7 +69,7 @@ jwt = JWTManager(app) #this will make endpoint named '/auth' (username,password)
 def health():
     return "OK"
 
-@app.before_first_request
+@app.before_request
 def create_tables():
     db.create_all()
 
@@ -77,8 +77,8 @@ create_api(api)
 # create_socketio(sock)
 # CORS(sock)
 if __name__ == "__main__":
-
+    print("Now we Run...")
     db.init_app(app)
     app.run(host=host,port=port,debug=True) #debug tells us what is problem
-    print("Now we Run...")
+
     #sock.run(app,host=host,port=port,debug=False)

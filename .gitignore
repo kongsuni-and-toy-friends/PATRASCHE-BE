@@ -1,1 +1,7 @@
 *.pyc
+
+chatbot
+
+/.idea
+
+/__pycache__
