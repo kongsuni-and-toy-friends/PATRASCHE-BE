@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from models import CounselorModel,IndexPageModel,ReservationModel,UserModel
 
 class GetCounselors(Resource):
+
     def get(self):
         counselors = CounselorModel.find_all()
 

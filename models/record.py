@@ -10,45 +10,39 @@ class RecordModel(db.Model):
     end_time = db.Column(db.DateTime)
     live = db.Column(db.Boolean)
 
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     child_id = db.Column(db.Integer, db.ForeignKey('user_child.id'))
     chats = db.relationship('ChatModel', backref='child_record')
     # statistics = db.relationship('StatisticModel', backref='childs')
 
-    def __init__(self,_child_id,_date,_start,_end,_live):
+    def __init__(self,_child_id,_user_id,_date,_start,_end,_live):
         self.child_id = _child_id
+        self.user_id = _user_id
         self.date = _date
         self.start_time = _start
         self.end_time = _end
         self.live = _live
 
     def json(self):
-        return {'info':
-                    {
-                        'id': self.id, 'name': self.name, 'age':self.age, 'gender':self.gender,'serial_number':self.serial_number,
-                        'thumbnail':self.profile
-                    },
-                'chats':[chat.json() for chat in self.chats]
+        return {
+                    'id': self.id,
+                    'date': self.date,
+                    'start_time':self.start_time,
+                    'end_time':self.end_time,
+                    'live':self.live
                 }
 
     @classmethod
-    def find_by_name_with_user_id(cls, user_id, name):
-        return cls.query.filter(and_(cls.user_id == user_id, cls.name == name)).all()
+    def find_all_by_child_id_with_user_id(cls, child_id,user_id):
+        return cls.query.filter(and_(cls.user_id == user_id, cls.child_id == child_id)).all()
 
-    @classmethod
-    def find_by_serial_number(cls, serial_number):
-        return cls.query.filter(cls.serial_number == serial_number).first()
 
-    @classmethod
-    def find_by_user_id(cls,user_id):
-        return cls.query.filter_by(user_id=user_id).first()
+    def find_all_by_child_id(cls,child_id):
+        return cls.query.filter_by(child_id=child_id).all()
 
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
-
-    @classmethod
-    def find_by_serial(cls, SN):
-        return cls.query.filter_by(serial_number=SN).first()
 
     def save_to_db(self):
         db.session.add(self)

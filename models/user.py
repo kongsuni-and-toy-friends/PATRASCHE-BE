@@ -14,15 +14,18 @@ class UserModel(db.Model):
     thumbnail = db.Column(db.String(80))
     provider = db.Column(db.String(80))
     phone = db.Column(db.String(80))
+    address = db.Column(db.String(80))
 
     created_at = db.Column(db.DateTime)
 
     childs = db.relationship('ChildModel', backref='user')
+    records = db.relationship('RecordModel', backref='user')
+    chats = db.relationship('ChatModel', backref='user')
     pre_reservations = db.relationship('PreReservationModel', backref='user')
     post_reservations = db.relationship('PostReservationModel', backref='user')
     # reservations = db.relationship('ReservationModel', backref='users')
 
-    def __init__(self, _name,_email,_gender,_birth,_thumbnail,_created_at,_phone,_password="",_provider=""):
+    def __init__(self, _name,_email,_gender,_birth,_created_at,_phone,_address,_password="",_provider="",_thumbnail=""):
         self.name = _name
         self.email = _email
         self.gender = _gender
@@ -31,6 +34,7 @@ class UserModel(db.Model):
         self.thumbnail = _thumbnail
         self.provider = _provider
         self.phone = _phone
+        self.address = _address
         self.created_at = _created_at
 
     def json(self):

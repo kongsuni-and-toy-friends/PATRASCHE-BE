@@ -1,85 +1,34 @@
+from flask import make_response
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required,get_jwt_identity
 from models.child import ChildModel
+from models.record import RecordModel
 
 
 class Child(Resource):
-    _user_parser = reqparse.RequestParser()
-    _user_parser.add_argument('child_name',
-                              type=str,
-                              required=True,
-                              help="This field cannot be blank."
-                              )
-    _user_parser.add_argument('child_age',
-                              type=int,
-                              required=True,
-                              help="This field cannot be blank."
-                              )
-    _user_parser.add_argument('child_gender',
-                              type=str,
-                              required=True,
-                              help="This field cannot be blank."
-                              )
-    _user_parser.add_argument('serial_number',
-                              type=str,
-                              required=True,
-                              help="This field cannot be blank."
-                              )
 
+    @jwt_required()
     def get(self):
-        user_id = 1
-        child = ChildModel.find_by_user_id(user_id)
-        if child:
-            return {'child' : child.json()}, 200
+        user_id = get_jwt_identity()
+        childs = ChildModel.find_all_by_user_id(user_id)
 
-        return {'message': 'Child not found'}, 404
+        resp = make_response({
+            "response":[child.json() for child in childs]
+        })
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        return resp
 
-    def post(self):
-        user_id = 1
+class ChildRecordList(Resource):
 
-        data = Child._user_parser.parse_args()
+    @jwt_required()
+    def get(self,child_id):
 
-        if ChildModel.find_by_serial_number(data['serial_number']):
-            return {'message': "A serial_number '{}' already exists.".format(data['serial_number'])}, 400
+        user_id = get_jwt_identity()
 
-        child = ChildModel(user_id, data['child_name'],data['child_age'],data['child_gender'],data['serial_number'])
+        records = RecordModel.find_all_by_child_id_with_user_id(child_id,user_id)
 
-        try:
-            child.save_to_db()
-        except:
-            return {"message": "An error occurred creating the child info."}, 500
-
-        return child.json(), 201
-
-    def delete(self):
-        user_id = 1
-
-        child = ChildModel.find_by_user_id(user_id)
-        if child:
-            child.delete_from_db()
-
-        return {'message': 'Child deleted'}, 200
-
-    def put(self):
-        user_id = 1
-
-        data = Child._user_parser.parse_args()
-        child = ChildModel.find_by_user_id(user_id)
-
-        if child:
-            child.name = data['child_name']
-            child.age = data['child_age']
-            child.gender = data['child_gender']
-            child.serial_number = data['serial_number']
-        else:
-            child = ChildModel(user_id,data['child_name'],data['child_age'],data['child_gender'],data['serial_number'])
-
-        child.save_to_db()
-
-        return child.json(), 201
-
-class ChildList(Resource):
-    def get(self):
-        user_id = 1
-        childs = [child.json() for child in ChildModel.find_all_with_user_id(user_id)]
-        return {'childs': childs}
+        resp = make_response({
+            "response": records
+        })
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        return resp
