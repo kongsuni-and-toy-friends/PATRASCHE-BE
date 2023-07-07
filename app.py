@@ -80,5 +80,5 @@ create_api(api)
 if __name__ == "__main__":
     print("Now we Run...")
     db.init_app(app)
-    app.run(host=host,port=port,debug=True) #debug tells us what is problem
+    app.run(host=host,port=port,debug=False) #debug tells us what is problem
     #sock.run(app,host=host,port=port,debug=False)
