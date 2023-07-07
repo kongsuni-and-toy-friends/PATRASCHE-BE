@@ -60,6 +60,7 @@ class CounselorModel(db.Model):
         categories_id = [content.category_id for content in self.mid_categories]
         categories = CategoryModel.find_by_ids(categories_id)
 
+        print(categories)
         return {
                 'id':self.id,
                 'name':self.name,

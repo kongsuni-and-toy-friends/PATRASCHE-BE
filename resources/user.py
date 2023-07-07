@@ -248,7 +248,7 @@ class UserLogin(Resource):
 
         # this is what the `authenticate()` function did in security.py
         if user :
-            if compare_digest(user.password, data['password']):
+            if compare_digest(user.password, data['pw']):
                 # identity= is what the identity() function did in security.py—now stored in the JWT
                 access_token = create_access_token(identity=user.id, fresh=True)
                 refresh_token = create_refresh_token(user.id)

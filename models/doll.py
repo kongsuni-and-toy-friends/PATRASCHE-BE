@@ -10,7 +10,7 @@ class DollModel(db.Model):
 
     child_id = db.Column(db.Integer, db.ForeignKey('user_child.id'))
 
-    def __init__(self,_child_id,_pin,_name):
+    def __init__(self,_pin,_name,_child_id=None):
         self.child_id = _child_id
         self.pin = _pin
         self.name = _name
@@ -33,16 +33,16 @@ class DollModel(db.Model):
         return cls.query.filter(cls.serial_number == serial_number).first()
 
     @classmethod
-    def find_by_user_id(cls,user_id):
-        return cls.query.filter_by(user_id=user_id).first()
+    def find_by_child_id(cls,child_id):
+        return cls.query.filter_by(child_id=child_id).first()
 
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
 
     @classmethod
-    def find_by_serial(cls, SN):
-        return cls.query.filter_by(serial_number=SN).first()
+    def find_by_pin(cls, pin):
+        return cls.query.filter_by(pin=pin).first()
 
     def save_to_db(self):
         db.session.add(self)

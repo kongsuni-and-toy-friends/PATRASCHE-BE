@@ -1,6 +1,6 @@
 from db import db
 from . import and_
-
+import datetime
 
 class AvailableTimeModel(db.Model):
     __tablename__ = 'counselor_availabletime'
@@ -24,8 +24,8 @@ class AvailableTimeModel(db.Model):
     def json(self):
         return {
                 'day': self.day,
-                'start': self.start_time,
-                'end':self.end_time
+                'start': datetime.datetime.strftime(self.start_time,"%H:%M:%S"),
+                'end':datetime.datetime.strftime(self.end_time,"%H:%M:%S")
                 }
 
     @classmethod

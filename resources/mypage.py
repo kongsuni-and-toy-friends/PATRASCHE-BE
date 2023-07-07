@@ -1,8 +1,10 @@
 from flask import make_response
-from flask_restful import Resource, reqparse
+from flask_restx import Resource, reqparse
 from flask_jwt_extended import jwt_required,get_jwt_identity
 from models.child import ChildModel
 from models.record import RecordModel
+from models.doll import DollModel
+import datetime
 
 
 class EnrollChild(Resource):
@@ -20,27 +22,51 @@ class EnrollChild(Resource):
                          required=True
                          )
     _parser.add_argument('birth',
-                         type=str,
+                         type=lambda x: datetime.datetime.strptime(x,"%Y-%m-%d"),
                          required=True
                          )
     _parser.add_argument('doll',
                          type=str,
                          required=True
                          )
+    _parser.add_argument('thumbnail',
+                         type=str,
+                         required=False
+                         )
 
     @jwt_required()
     def post(self):
         user_id = get_jwt_identity()
-        childs = ChildModel.find_all_by_user_id(user_id)
+
+        data = EnrollChild._parser.parse_args()
+
+        child = ChildModel(
+            user_id,
+            data['name'],
+            data['birth'],
+            data['gender'],
+            data['thumbnail'],
+            datetime.datetime.now()
+        )
+        child.save_to_db()
+
+        doll = DollModel.find_by_pin(data['pin'])
+        doll.child_id = child.id
+        doll.name = data['name']
+        doll.save_to_db()
 
         resp = make_response({
-            "response":[child.json() for child in childs]
+            "message":"Child has been created!"
         })
         resp.headers['Access-Control-Allow-Origin'] = '*'
         return resp
 
-class ChildRecordList(Resource):
+class DollComCheck(Resource):
 
+    """
+    TODO:
+        소켓통신으로 인형과 연결되었는지 확인하는 로직이 필요함!
+    """
     @jwt_required()
     def get(self,child_id):
 

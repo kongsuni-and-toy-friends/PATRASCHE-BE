@@ -1,5 +1,6 @@
 from db import db
 from . import and_
+import datetime
 
 class ChatModel(db.Model):
     __tablename__ = 'record_chat'
@@ -21,7 +22,7 @@ class ChatModel(db.Model):
 
     def json(self):
         return {
-            'date': self.date,
+            'date': datetime.datetime.strftime(self.date,"%Y-%m-%d %H:%M:%S"),
             'chatter': self.chatter,
             'utterance': self.utterance
         }
@@ -46,7 +47,7 @@ class ChatModel(db.Model):
 
     @classmethod
     def find_all_by_user_id_with_record_id(cls,user_id,record_id):
-        return cls.query.filter(and_(user_id=user_id,record_id=record_id)).all()
+        return cls.query.filter(and_(cls.user_id==user_id,cls.record_id==record_id)).all()
 
     def save_to_db(self):
         db.session.add(self)

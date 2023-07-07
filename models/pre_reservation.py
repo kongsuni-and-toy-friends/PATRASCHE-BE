@@ -2,6 +2,7 @@ from db import db
 from . import and_
 from .counselor import CounselorModel
 from .child import ChildModel
+import datetime
 
 class PreReservationModel(db.Model):
     __tablename__ = 'pre_reservation'
@@ -33,12 +34,12 @@ class PreReservationModel(db.Model):
 
         return {
                     'id': self.id,
-                    'date': self.date,
+                    'date': datetime.datetime.strftime(self.date,"%Y-%m-%d"),
+                    'start':datetime.datetime.strftime(self.start_time,"%H:%M:%S"),
                     'counselor':counselor.name,
                     'child':child.name,
                     'thumbnail':child.thumbnail,
                     'problem':self.problem
-
                 }
 
     @classmethod

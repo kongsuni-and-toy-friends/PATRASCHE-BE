@@ -9,7 +9,7 @@ def create_api(api):
     from .v2.auth import CounselorRegister, CounselorApprove, CounselorProfile, CounselorLogin, CounselorKakao, CounselorDupCheck
     from .v2.reservation import V2PreReservation,V2PreReservationInfo
     from .develop.develop import MakeMock
-    from .mypage import EnrollChild
+    from .mypage import EnrollChild,DollComCheck
     # from main_page import MainBanner
     # from .chat import RangeChatList, AllChatList,YMDChatList,NumberChatList
 
@@ -66,7 +66,7 @@ def create_api(api):
     # mypage namespace
     ns_mypage = api.namespace('mypage')
     ns_mypage.add_resource(EnrollChild, '/enroll')
-
+    ns_mypage.add_resource(DollComCheck,'/dollcheck')
 
     # v2 auth namespace
     # #ns_auth.add_resource(UserKakao, '/kakao')

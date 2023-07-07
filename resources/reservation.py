@@ -1,5 +1,5 @@
 from flask import make_response, request
-from flask_restful import Resource, reqparse
+from flask_restx import Resource, reqparse
 from flask_jwt_extended import jwt_required,get_jwt_identity
 from models.chat import ChatModel
 from models.category import CategoryModel,MidCategoryModel
@@ -10,6 +10,7 @@ from models.record import RecordModel
 from models.counselor import CounselorModel
 from models.pre_reservation import PreReservationModel
 from models.post_reservation import PostReservationModel
+import datetime
 
 class PreReservation(Resource):
 
@@ -29,7 +30,7 @@ class PreReservation(Resource):
 class PostReservation(Resource):
 
     @jwt_required()
-    def get(self,counselor_id):
+    def get(self):
 
         user_id = get_jwt_identity()
         reservations = PostReservationModel.find_by_user_id(user_id)
@@ -43,11 +44,11 @@ class PostReservation(Resource):
 class MakeReservation(Resource):
     _parser = reqparse.RequestParser()
     _parser.add_argument('date',
-                         type=str,
+                         type=lambda x: datetime.datetime.strptime(x,"%Y-%m-%d"),
                          required=True
                          )
     _parser.add_argument('start',
-                         type=str,
+                         type=lambda x: datetime.datetime.strptime(x,"%H:%M:%S"),
                          required=True
                          )
     _parser.add_argument('problem',

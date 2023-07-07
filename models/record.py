@@ -1,6 +1,6 @@
 from db import db
 from . import and_
-
+import datetime
 
 class RecordModel(db.Model):
     __tablename__ = 'child_record'
@@ -26,9 +26,9 @@ class RecordModel(db.Model):
     def json(self):
         return {
                     'id': self.id,
-                    'date': self.date,
-                    'start_time':self.start_time,
-                    'end_time':self.end_time,
+                    'date': datetime.datetime.strftime(self.date,"%Y-%m-%d"),
+                    'start_time':datetime.datetime.strftime(self.start_time,"%H:%M:%S"),
+                    'end_time':datetime.datetime.strftime(self.end_time,"%H:%M:%S"),
                     'live':self.live
                 }
 
