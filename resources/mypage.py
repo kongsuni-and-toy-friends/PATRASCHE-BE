@@ -5,10 +5,31 @@ from models.child import ChildModel
 from models.record import RecordModel
 
 
-class Child(Resource):
+class EnrollChild(Resource):
+    _parser = reqparse.RequestParser()
+    _parser.add_argument('pin',
+                         type=str,
+                         required=True
+                         )
+    _parser.add_argument('name',
+                         type=str,
+                         required=True
+                         )
+    _parser.add_argument('gender',
+                         type=str,
+                         required=True
+                         )
+    _parser.add_argument('birth',
+                         type=str,
+                         required=True
+                         )
+    _parser.add_argument('doll',
+                         type=str,
+                         required=True
+                         )
 
     @jwt_required()
-    def get(self):
+    def post(self):
         user_id = get_jwt_identity()
         childs = ChildModel.find_all_by_user_id(user_id)
 

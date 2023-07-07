@@ -22,12 +22,10 @@ class AvailableTimeModel(db.Model):
         self.counselor_id = _counselor_id
 
     def json(self):
-        return {'info':
-                    {
-                        'id': self.id, 'name': self.name, 'age':self.age, 'gender':self.gender,'serial_number':self.serial_number,
-                        'thumbnail':self.profile
-                    },
-                'chats':[chat.json() for chat in self.chats]
+        return {
+                'day': self.day,
+                'start': self.start_time,
+                'end':self.end_time
                 }
 
     @classmethod
@@ -39,8 +37,8 @@ class AvailableTimeModel(db.Model):
         return cls.query.filter(cls.serial_number == serial_number).first()
 
     @classmethod
-    def find_by_user_id(cls,user_id):
-        return cls.query.filter_by(user_id=user_id).first()
+    def find_by_counselor_id(cls,counselor_id):
+        return cls.query.filter_by(counselor_id=counselor_id).all()
 
     @classmethod
     def find_by_id(cls, id):

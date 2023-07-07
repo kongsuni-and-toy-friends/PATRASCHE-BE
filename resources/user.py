@@ -1,4 +1,6 @@
-from flask import make_response
+import datetime
+
+from flask import make_response, request
 from flask_restx import Resource, reqparse
 from hmac import compare_digest
 from flask_jwt_extended import (
@@ -11,7 +13,6 @@ import json
 import requests
 from models import UserModel
 from models import CounselorModel
-
 
 class UserKakao(Resource):
     _parser = reqparse.RequestParser()
@@ -29,7 +30,6 @@ class UserKakao(Resource):
 
     def post(self):
 
-        print("hello")
         code_data = UserKakao._parser.parse_args()
         code = code_data["code"]
 
@@ -48,10 +48,8 @@ class UserKakao(Resource):
             }
         )
 
-        print(response.text)
         try:
             access_token = json.loads(((response.text).encode('utf-8')))['access_token']
-            print(access_token)
         except :
             print("No token")
             resp = make_response({
@@ -69,7 +67,6 @@ class UserKakao(Resource):
         user_data = json.loads(((response.text).encode('utf-8')))['kakao_account']
         user_profile = user_data['profile']
 
-        print(user_data)
         name = user_profile['nickname']
         email = user_data["email"]
         birthday = user_data["birthday"]
@@ -89,7 +86,6 @@ class UserKakao(Resource):
             resp.headers['Access-Control-Allow-Origin'] = '*'
             return resp
         else :
-            print("GO ahead")
             resp = make_response({
                 "registered": False,
                 "email": email,
@@ -102,40 +98,103 @@ class UserKakao(Resource):
             return resp
 
 class UserRegister(Resource):
-    _user_parser = reqparse.RequestParser()
-    _user_parser.add_argument('user_name',
+    _parser = reqparse.RequestParser()
+    _parser.add_argument('email',
                               type=str,
                               required=True,
                               help="This field cannot be blank."
                               )
-    _user_parser.add_argument('password',
+    _parser.add_argument('pw',
+                              type=str,
+                              required=False,
+                              help="This field cannot be blank."
+                              )
+    _parser.add_argument('name',
                               type=str,
                               required=True,
                               help="This field cannot be blank."
                               )
-    _user_parser.add_argument('user_subname',
-                              type=str,
-                              required=True,
-                              help="This field cannot be blank."
-                              )
-    _user_parser.add_argument('user_type',
-                            type=str,
+    _parser.add_argument('birth',
+                            type=lambda x: datetime.datetime.strptime("%Y-%m-%d"),
                             required=True,
                             help="This field cannot be blank."
                             )
+    _parser.add_argument('gender',
+                         type=str,
+                         required=True,
+                         help="This field cannot be blank."
+                         )
+    _parser.add_argument('phone',
+                         type=str,
+                         required=True,
+                         help="This field cannot be blank."
+                         )
+    _parser.add_argument('address',
+                         type=str,
+                         required=True,
+                         help="This field cannot be blank."
+                         )
+    _parser.add_argument('provider',
+                         type=str,
+                         required=False,
+                         help="This field cannot be blank."
+                         )
+    _parser.add_argument('thumbnail',
+                         type=str,
+                         required=False,
+                         help="This field cannot be blank."
+                         )
 
     def post(self):
-        data = UserRegister._user_parser.parse_args()
+        data = UserRegister._parser.parse_args()
 
-        if UserModel.find_by_username(data['user_name']):
-            return {"message": "A user with that email already exists"}, 400
-
-        user = UserModel(data['user_name'],data['user_subname'],data['password'],data['user_type'])
+        user = UserModel(
+            data['name'],
+            data['email'],
+            data['gender'],
+            datetime.datetime.strptime(data['birth'],"%Y-%m-%d"),
+            datetime.datetime.now(),
+            data['phone'],
+            data['address']
+        )
+        if data["pw"] != "":
+            user.password = data['pw']
+        if data["provider"] != "":
+            user.provider = data["provider"]
+        else :
+            user.provider = "common"
+        if data["thumbnail"] != "":
+            user.thumbnail = data["thumbnail"]
         user.save_to_db()
-        return {"message": "User created successfully."}, 201
 
+        access_token = create_access_token(identity=user.id, fresh=True)
+        refresh_token = create_refresh_token(user.id)
 
+        resp = make_response({
+            "message": "User created successfully.",
+            "access": access_token,
+            "refresh": refresh_token,
+        })
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        return resp
 
+class UserDupCheck(Resource):
+    def get(self):
+        email = request.args.get("email")
+
+        if UserModel.find_by_useremail(email):
+            resp = make_response({
+                "result":False,
+                "message":"이미 가입한 이메일입니다."
+            })
+            resp.headers['Access-Control-Allow-Origin'] = '*'
+            return resp
+        else :
+            resp = make_response({
+                "result": True
+            })
+            resp.headers['Access-Control-Allow-Origin'] = '*'
+            return resp
 
 class User(Resource):
     """
@@ -162,34 +221,38 @@ class User(Resource):
         return {'message': 'User deleted.'}, 200
 
 class UserLogin(Resource):
-    _user_parser = reqparse.RequestParser()
-    _user_parser.add_argument('user_name',
+    _parser = reqparse.RequestParser()
+    _parser.add_argument('email',
                               type=str,
                               required=True,
                               help="This field cannot be blank."
                               )
-    _user_parser.add_argument('password',
+    _parser.add_argument('pw',
                               type=str,
                               required=True,
                               help="This field cannot be blank."
                               )
-    def post(self):
-        data = UserLogin._user_parser.parse_args()
-        user = UserModel.find_by_username(data['user_name'])
 
-        if not user :
-            user = CounselorModel.find_by_username(data['user_name'])
+    def post(self):
+        data = UserLogin._parser.parse_args()
+        user = UserModel.find_by_useremail(data['email'])
 
         # this is what the `authenticate()` function did in security.py
-        if user and compare_digest(user.password, data['password']):
-            # identity= is what the identity() function did in security.py—now stored in the JWT
-            access_token = create_access_token(identity=user.id, fresh=True)
-            refresh_token = create_refresh_token(user.id)
-            return {
-                'access_token': access_token,
-                'refresh_token': refresh_token,
-                'user_id':user.id,
-                'user_type':user.user_type
-            }, 200
+        if user :
+            if compare_digest(user.password, data['password']):
+                # identity= is what the identity() function did in security.py—now stored in the JWT
+                access_token = create_access_token(identity=user.id, fresh=True)
+                refresh_token = create_refresh_token(user.id)
 
-        return {"message": "Invalid Credentials!"}, 401
+                resp = make_response({
+                    "access": access_token,
+                    "refresh": refresh_token,
+                })
+                resp.headers['Access-Control-Allow-Origin'] = '*'
+                return resp
+
+        resp = make_response({
+            "message": "Invalid Credentials!"
+        })
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        return resp

@@ -26,12 +26,13 @@ class ChildModel(db.Model):
 
 
     def json(self):
-        return {'info':
-                    {
-                        'id': self.id, 'name': self.name, 'age':self.age, 'gender':self.gender,'serial_number':self.serial_number,
-                        'thumbnail':self.profile
-                    },
-                'chats':[chat.json() for chat in self.chats]
+        return {
+                    'id': self.id,
+                    'doll': self.dolls[0],
+                    'name': self.name,
+                    'age':self.age,
+                    'gender':self.gender,
+                    'thumbnail':self.profile
                 }
 
     @classmethod
@@ -43,16 +44,13 @@ class ChildModel(db.Model):
         return cls.query.filter(cls.serial_number == serial_number).first()
 
     @classmethod
-    def find_by_user_id(cls,user_id):
-        return cls.query.filter_by(user_id=user_id).first()
+    def find_all_by_user_id(cls,user_id):
+        return cls.query.filter_by(user_id=user_id).all()
 
     @classmethod
     def find_by_id(cls, id):
         return cls.query.filter_by(id=id).first()
 
-    @classmethod
-    def find_by_serial(cls, SN):
-        return cls.query.filter_by(serial_number=SN).first()
 
     def save_to_db(self):
         db.session.add(self)

@@ -1,6 +1,7 @@
 from db import db
 from . import and_
-
+from .counselor import CounselorModel
+from .child import ChildModel
 
 class PostReservationModel(db.Model):
     __tablename__ = 'post_reservation'
@@ -29,13 +30,18 @@ class PostReservationModel(db.Model):
         self.child_id = _child_id
 
     def json(self):
-        return {'info':
-                    {
-                        'id': self.id, 'name': self.name, 'age':self.age, 'gender':self.gender,'serial_number':self.serial_number,
-                        'thumbnail':self.profile
-                    },
-                'chats':[chat.json() for chat in self.chats]
-                }
+        counselor = CounselorModel.find_by_id(self.counselor_id)
+        child = ChildModel.find_by_id(self.child_id)
+
+        return {
+            'id': self.id,
+            'date': self.date,
+            'counselor': counselor.name,
+            'child': child.name,
+            'problem': self.problem,
+            'has_review': self.has_review,
+            'review_id': self.review[0]
+        }
 
     @classmethod
     def find_by_name_with_user_id(cls, user_id, name):

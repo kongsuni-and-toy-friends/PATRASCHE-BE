@@ -1,5 +1,6 @@
 from db import db
 from .child import ChildModel
+from .category import CategoryModel
 import json
 
 class CounselorModel(db.Model):
@@ -18,10 +19,10 @@ class CounselorModel(db.Model):
     thumbnail = db.Column(db.String(80))
     provider = db.Column(db.String(80))
     birth = db.Column(db.DateTime)
-
+    state = db.Column(db.String(80))
     created_at = db.Column(db.DateTime)
 
-    categories = db.relationship('CategoryModel', backref='counselor')
+    mid_categories = db.relationship('MidCategoryModel', backref='counselor')
     available_times = db.relationship('AvailableTimeModel', backref='counselor')
     careers = db.relationship('CareerModel', backref='counselor')
     licenses = db.relationship('LicenseModel', backref='counselor')
@@ -31,7 +32,7 @@ class CounselorModel(db.Model):
     #childs = db.relationship('ChildModel', backref='user')
     # reservations = db.relationship('ReservationModel', backref='users')
 
-    def __init__(self, _name,_phone,_email,_gender,_address,_address_range,_intro_title,_intro_content,_thumbnail,_created_at,_password="",_provider=""):
+    def __init__(self, _name,_phone,_email,_gender,_address,_address_range,_birth,_created_at,_intro_title="",_intro_content="",_thumbnail="",_password="",_provider=""):
         self.email = _email
         self.password = _password
         self.name = _name
@@ -44,14 +45,29 @@ class CounselorModel(db.Model):
         self.thumbnail = _thumbnail
         self.provider = _provider
         self.created_at = _created_at
+        self.birth = _birth
 
     def json(self):
+        total = 0
+        for review in self.reviews:
+            total += review.score
+
+        if len(self.reviews) == 0:
+            score = 0
+        else :
+            score = total / len(self.reviews)
+
+        categories_id = [content.category_id for content in self.mid_categories]
+        categories = CategoryModel.find_by_ids(categories_id)
+
         return {
                 'id':self.id,
                 'name':self.name,
-                'user_name':self.user_name,
-                'user_type':self.user_type,
-                'thumbnail':self.user_profile
+                'thumbnail': self.thumbnail,
+                'score': score,
+                'category':[cate.name for cate in categories],
+                'location':self.address,
+                'time': [time.json() for time in self.available_times]
             }
 
 
@@ -68,9 +84,13 @@ class CounselorModel(db.Model):
     #     child.save_to_db()
 
     @classmethod
-    def find_by_useremail(cls, user_email):
-        return cls.query.filter_by(email=user_email).first()
+    def find_by_email(cls, email):
+        return cls.query.filter_by(email=email).first()
 
     @classmethod
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
+
+    @classmethod
+    def find_all(cls):
+        return cls.query.all()
