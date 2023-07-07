@@ -1,6 +1,7 @@
 from db import db
 from . import and_
-
+from .counselor import CounselorModel
+from .child import ChildModel
 
 class PreReservationModel(db.Model):
     __tablename__ = 'pre_reservation'
@@ -26,17 +27,23 @@ class PreReservationModel(db.Model):
         self.child_id = _child_id
 
     def json(self):
-        return {'info':
-                    {
-                        'id': self.id, 'name': self.name, 'age':self.age, 'gender':self.gender,'serial_number':self.serial_number,
-                        'thumbnail':self.profile
-                    },
-                'chats':[chat.json() for chat in self.chats]
+
+        counselor = CounselorModel.find_by_id(self.counselor_id)
+        child = ChildModel.find_by_id(self.child_id)
+
+        return {
+                    'id': self.id,
+                    'date': self.date,
+                    'counselor':counselor.name,
+                    'child':child.name,
+                    'thumbnail':child.thumbnail,
+                    'problem':self.problem
+
                 }
 
     @classmethod
-    def find_by_name_with_user_id(cls, user_id, name):
-        return cls.query.filter(and_(cls.user_id == user_id, cls.name == name)).all()
+    def find_by_counselor_id_with_id(cls, counselor_id, id):
+        return cls.query.filter(and_(cls.counselor_id == counselor_id, cls.id == id)).first()
 
     @classmethod
     def find_by_serial_number(cls, serial_number):
@@ -44,7 +51,11 @@ class PreReservationModel(db.Model):
 
     @classmethod
     def find_by_user_id(cls,user_id):
-        return cls.query.filter_by(user_id=user_id).first()
+        return cls.query.filter_by(user_id=user_id).all()
+
+    @classmethod
+    def find_by_counselor_id(cls, counselor_id):
+        return cls.query.filter_by(counselor_id=counselor_id).all()
 
     @classmethod
     def find_by_id(cls, id):

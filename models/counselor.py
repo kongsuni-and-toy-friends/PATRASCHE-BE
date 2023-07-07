@@ -32,7 +32,7 @@ class CounselorModel(db.Model):
     #childs = db.relationship('ChildModel', backref='user')
     # reservations = db.relationship('ReservationModel', backref='users')
 
-    def __init__(self, _name,_phone,_email,_gender,_address,_address_range,_intro_title,_intro_content,_thumbnail,_created_at,_password="",_provider=""):
+    def __init__(self, _name,_phone,_email,_gender,_address,_address_range,_birth,_created_at,_intro_title="",_intro_content="",_thumbnail="",_password="",_provider=""):
         self.email = _email
         self.password = _password
         self.name = _name
@@ -45,6 +45,7 @@ class CounselorModel(db.Model):
         self.thumbnail = _thumbnail
         self.provider = _provider
         self.created_at = _created_at
+        self.birth = _birth
 
     def json(self):
         total = 0
@@ -83,8 +84,8 @@ class CounselorModel(db.Model):
     #     child.save_to_db()
 
     @classmethod
-    def find_by_useremail(cls, user_email):
-        return cls.query.filter_by(email=user_email).first()
+    def find_by_email(cls, email):
+        return cls.query.filter_by(email=email).first()
 
     @classmethod
     def find_by_id(cls, _id):

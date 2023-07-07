@@ -1,9 +1,14 @@
+from flask_restx import Namespace
 
 def create_api(api):
     from .user import UserKakao, UserRegister, UserDupCheck, UserLogin
     from .child import Child,ChildRecordList
     from .record import Chat
     from .counselor import Counselor,CounselorInfo,CounselorTime
+    from .reservation import PreReservation, PostReservation, MakeReservation
+    from .v2.auth import CounselorRegister, CounselorApprove, CounselorProfile, CounselorLogin, CounselorKakao, CounselorDupCheck
+    from .v2.reservation import V2PreReservation,V2PreReservationInfo
+
     # from main_page import MainBanner
     # from .chat import RangeChatList, AllChatList,YMDChatList,NumberChatList
 
@@ -42,7 +47,7 @@ def create_api(api):
 
 
     # counselors namespace
-    ns_counselor = api.namespace('counselors')
+    ns_counselor = api.namespace('counselor')
     ns_counselor.add_resource(Counselor, '/')
     ns_counselor.add_resource(CounselorInfo, '/<int:counselor_id>')
     ns_counselor.add_resource(CounselorTime, '/<int:counselor_id>/time')
@@ -50,12 +55,30 @@ def create_api(api):
     # api.add_resource(GetPageInfo, '/consulting/page/<int:id>')
 
     # reservations namespace
-    # api.add_resource(MakeReservation, '/reservation/make')
-    # api.add_resource(GetUserReservation, '/reservations/user/<int:id>')
-    # api.add_resource(GetCounselorReservation, '/reservations/counselor/<int:id>')
-    # api.add_resource(AcceptReservation, '/reservation/<int:id>/accept')
-    # api.add_resource(RejectReservation, '/reservation/<int:id>/reject')
-    # api.add_resource(CancleReservation, '/reservation/<int:id>/cancle')
+    ns_counselor = api.namespace('reservation')
+    ns_counselor.add_resource(MakeReservation, '/<int:counselor_id>')
+    ns_counselor.add_resource(PreReservation, '/pre')
+    ns_counselor.add_resource(PostReservation, '/post')
+
+    # v2 auth namespace
+    # #ns_auth.add_resource(UserKakao, '/kakao')
+    # ns_auth.add_resource(UserRegister, '/register')
+    # ns_auth.add_resource(UserDupCheck, '/dupcheck')
+    # ns_auth.add_resource(UserLogin, '/login')
+    ns_v2_auth = api.namespace('v2/auth')
+    ns_v2_auth.add_resource(CounselorKakao, '/kakao')
+    ns_v2_auth.add_resource(CounselorRegister, '/register')
+    ns_v2_auth.add_resource(CounselorDupCheck, '/dupcheck')
+    ns_v2_auth.add_resource(CounselorLogin, '/login')
+    ns_v2_auth.add_resource(CounselorProfile, '/profile')
+    ns_v2_auth.add_resource(CounselorApprove, '/approve')
+
+    # v2 reservation namespace
+    ns_v2_reservation = api.namespace('v2/reservation')
+    ns_v2_reservation.add_resource(V2PreReservation, '/')
+    ns_v2_reservation.add_resource(V2PreReservationInfo, '/<int:reservation_id>')
+
+
 
 def create_socketio(sock):
     from .chatnamespace import ChatNamespace

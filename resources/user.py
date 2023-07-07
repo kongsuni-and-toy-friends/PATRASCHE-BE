@@ -237,21 +237,19 @@ class UserLogin(Resource):
         data = UserLogin._parser.parse_args()
         user = UserModel.find_by_useremail(data['email'])
 
-        if not user :
-            user = CounselorModel.find_by_username(data['user_name'])
-
         # this is what the `authenticate()` function did in security.py
-        if user and compare_digest(user.password, data['password']):
-            # identity= is what the identity() function did in security.py—now stored in the JWT
-            access_token = create_access_token(identity=user.id, fresh=True)
-            refresh_token = create_refresh_token(user.id)
+        if user :
+            if compare_digest(user.password, data['password']):
+                # identity= is what the identity() function did in security.py—now stored in the JWT
+                access_token = create_access_token(identity=user.id, fresh=True)
+                refresh_token = create_refresh_token(user.id)
 
-            resp = make_response({
-                "access": access_token,
-                "refresh": refresh_token,
-            })
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+                resp = make_response({
+                    "access": access_token,
+                    "refresh": refresh_token,
+                })
+                resp.headers['Access-Control-Allow-Origin'] = '*'
+                return resp
 
         resp = make_response({
             "message": "Invalid Credentials!"
