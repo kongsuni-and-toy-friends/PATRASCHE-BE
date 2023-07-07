@@ -20,8 +20,8 @@ class CategoryModel(db.Model):
         return cls.query.filter(cls.name.in_(names)).all()
 
     @classmethod
-    def find_by_serial_number(cls, serial_number):
-        return cls.query.filter(cls.serial_number == serial_number).first()
+    def find_by_name(cls, name):
+        return cls.query.filter_by(name=name).first()
 
     @classmethod
     def find_by_user_id(cls,user_id):
@@ -29,7 +29,7 @@ class CategoryModel(db.Model):
 
     @classmethod
     def find_by_ids(cls, ids):
-        return cls.query.filter(cls.id.in_(ids)).first()
+        return cls.query.filter(cls.id.in_(ids)).all()
 
     @classmethod
     def find_by_serial(cls, SN):
@@ -55,8 +55,8 @@ class MidCategoryModel(db.Model):
     # #chats = db.relationship('ChatModel', backref='child_record')
     # statistics = db.relationship('StatisticModel', backref='childs')
 
-    def __init__(self,_name,_counselor_id):
-        self.name = _name
+    def __init__(self,_category_id,_counselor_id):
+        self.category_id = _category_id
         self.counselor_id = _counselor_id
 
 

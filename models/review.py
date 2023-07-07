@@ -49,8 +49,8 @@ class ReviewModel(db.Model):
         return cls.query.filter_by(id=id).first()
 
     @classmethod
-    def find_by_serial(cls, SN):
-        return cls.query.filter_by(serial_number=SN).first()
+    def find_by_reservation_id(cls, reservation_id):
+        return cls.query.filter_by(reservation_id=reservation_id).first()
 
     def save_to_db(self):
         db.session.add(self)

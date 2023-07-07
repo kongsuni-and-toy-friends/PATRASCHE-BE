@@ -1,5 +1,6 @@
 from db import db
 from . import and_
+import datetime
 
 
 class CareerModel(db.Model):
@@ -26,10 +27,14 @@ class CareerModel(db.Model):
         self.counselor_id = _counselor_id
 
     def json(self):
+        if self.end_date != None:
+            end_date = datetime.datetime.strftime(self.end_date,"%Y-%m-%d")
+        else:
+            end_date = None
         return {
                 'name': self.name,
-                'start_date':self.start_date,
-                'end_date':self.end_date
+                'start_date':datetime.datetime.strftime(self.start_date,"%Y-%m-%d"),
+                'end_date':end_date
                 }
 
     @classmethod

@@ -2,6 +2,8 @@ from db import db
 from . import and_
 from .counselor import CounselorModel
 from .child import ChildModel
+from .review import ReviewModel
+import datetime
 
 class PostReservationModel(db.Model):
     __tablename__ = 'post_reservation'
@@ -33,14 +35,22 @@ class PostReservationModel(db.Model):
         counselor = CounselorModel.find_by_id(self.counselor_id)
         child = ChildModel.find_by_id(self.child_id)
 
+        review = ReviewModel.find_by_reservation_id(self.id)
+
+        if review :
+            review_id = review.id
+        else:
+            review_id = None
+
         return {
             'id': self.id,
-            'date': self.date,
+            'date': datetime.datetime.strftime(self.date,"%Y-%m-%d"),
+            'start':datetime.datetime.strftime(self.start_time,"%H:%M:%S"),
             'counselor': counselor.name,
             'child': child.name,
             'problem': self.problem,
             'has_review': self.has_review,
-            'review_id': self.review[0]
+            'review_id': review_id
         }
 
     @classmethod
@@ -53,7 +63,7 @@ class PostReservationModel(db.Model):
 
     @classmethod
     def find_by_user_id(cls,user_id):
-        return cls.query.filter_by(user_id=user_id).first()
+        return cls.query.filter_by(user_id=user_id).all()
 
     @classmethod
     def find_by_id(cls, id):

@@ -119,7 +119,7 @@ class CounselorRegister(Resource):
                               help="This field cannot be blank."
                               )
     _parser.add_argument('birth',
-                            type=lambda x: datetime.datetime.strptime("%Y-%m-%d"),
+                            type=lambda x: datetime.datetime.strptime(x,"%Y-%m-%d"),
                             required=True,
                             help="This field cannot be blank."
                             )
@@ -226,11 +226,11 @@ class CounselorLogin(Resource):
 
     def post(self):
         data = CounselorLogin._parser.parse_args()
-        counselor = CounselorModel.find_by_useremail(data['email'])
+        counselor = CounselorModel.find_by_email(data['email'])
 
         # this is what the `authenticate()` function did in security.py
         if counselor:
-            if compare_digest(counselor.password, data['password']):
+            if compare_digest(counselor.password, data['pw']):
                 # identity= is what the identity() function did in security.py—now stored in the JWT
                 access_token = create_access_token(identity=counselor.id, fresh=True)
                 refresh_token = create_refresh_token(counselor.id)
@@ -284,9 +284,13 @@ class CounselorProfile(Resource):
                          required=False
                          )
 
+    @jwt_required()
     def put(self):
+
+        counselor_id = get_jwt_identity()
+
         data = CounselorLogin._parser.parse_args()
-        counselor = CounselorModel.find_by_email(data['email'])
+        counselor = CounselorModel.find_by_id(counselor_id)
 
         if 'email' in data.keys():
             counselor.email = data['email']
@@ -313,36 +317,47 @@ class CounselorProfile(Resource):
 
 
 class CounselorApprove(Resource):
-    _parser = reqparse.RequestParser()
-    _parser.add_argument('degree',
-                              type=list,
-                              required=True
-                              )
-    _parser.add_argument('career',
-                              type=list,
-                              required=True
-                              )
-    _parser.add_argument('license',
-                         type=list,
-                         required=True
-                         )
+    # _parser = reqparse.RequestParser()
+    # _parser.add_argument('degree',
+    #                           type=list,
+    #                           required=True,
+    #                             location="json"
+    #                           )
+    # _parser.add_argument('career',
+    #                           type=list,
+    #                           required=True,
+    #                      location="json"
+    #                           )
+    # _parser.add_argument('license',
+    #                      type=list,
+    #                      required=True,
+    #                      location="json"
+    #                      )
 
+    @jwt_required()
     def post(self):
-        data = CounselorApprove._parser.parse_args()
-        counselor = CounselorModel.find_by_email(data['email'])
+        data = request.get_json()
+        print(data)
+        counselor_id = get_jwt_identity()
+
+        counselor = CounselorModel.find_by_id(counselor_id)
 
         degrees = data['degree']
         careers = data['career']
         licenses = data['license']
 
         for data in degrees:
+            if data['graduation']:
+                grad = datetime.datetime.strptime(data['graduation'],"%Y-%m-%d")
+            else:
+                grad = None
             degree = DegreeModel(
                 data['degree'],
                 data['name'],
                 data['subject'],
                 data['major'],
-                data['entrance'],
-                data['graduation'],
+                datetime.datetime.strptime(data['entrance'],"%Y-%m-%d"),
+                grad,
                 data['type'],
                 data['cert'],
                 counselor.id
@@ -350,21 +365,25 @@ class CounselorApprove(Resource):
             degree.save_to_db()
 
         for data in careers:
+            if data['end']:
+                end = datetime.datetime.strptime(data['end'],"%Y-%m-%d")
+            else:
+                end = None
             career = CareerModel(
                 data['name'],
-                data['start'],
+                datetime.datetime.strptime(data['start'],"%Y-%m-%d"),
                 data['type'],
                 data['role'],
                 data['cert'],
                 counselor.id,
-                data['end']
+                end
             )
             career.save_to_db()
 
         for data in licenses:
             career = LicenseModel(
                 data['name'],
-                data['date'],
+                datetime.datetime.strptime(data['date'],"%Y-%m-%d"),
                 data['cert'],
                 data['organization'],
                 counselor.id

@@ -1,6 +1,7 @@
 from db import db
 from . import and_
-
+from models.doll import DollModel
+import datetime
 
 class ChildModel(db.Model):
     __tablename__ = 'user_child'
@@ -16,7 +17,7 @@ class ChildModel(db.Model):
     records = db.relationship('RecordModel', backref='user_child')
     dolls = db.relationship('DollModel', backref='user_child')
 
-    def __init__(self,_user_id,_name,_birth,_gender,_thumbnail,_created_at):
+    def __init__(self,_user_id,_name,_birth,_gender,_created_at,_thumbnail=""):
         self.user_id = _user_id
         self.name = _name
         self.birth = _birth
@@ -26,13 +27,16 @@ class ChildModel(db.Model):
 
 
     def json(self):
+
+        doll = DollModel.find_by_child_id(self.id)
+
         return {
                     'id': self.id,
-                    'doll': self.dolls[0],
+                    'doll': doll.name,
                     'name': self.name,
-                    'age':self.age,
+                    'birth':datetime.datetime.strftime(self.birth,"%Y-%m-%d"),
                     'gender':self.gender,
-                    'thumbnail':self.profile
+                    'thumbnail':self.thumbnail
                 }
 
     @classmethod

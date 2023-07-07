@@ -1,5 +1,5 @@
 from flask import make_response, request
-from flask_restful import Resource, reqparse
+from flask_restx import Resource, reqparse
 from flask_jwt_extended import jwt_required,get_jwt_identity
 from models.chat import ChatModel
 from models.category import CategoryModel,MidCategoryModel
@@ -24,7 +24,8 @@ class Counselor(Resource):
     def get(self):
         data = Counselor._parser.parse_args()
 
-        if 'category' in data.keys():
+        if data['category'] != None:
+
             categories = CategoryModel.find_all_by_list_name(data['category'])
             categories_id = [cate.id for cate in categories]
 
@@ -35,11 +36,11 @@ class Counselor(Resource):
         else :
             counselors = CounselorModel.find_all()
 
-        if 'location' in data.keys():
+        if data['location'] != None:
             counselors = [counselor for counselor in counselors if counselor.address_range in data['location']]
 
         resp = make_response({
-            "response":[counselor.json() for counselor in counselors]
+            "response":[counselor.json() for counselor in counselors if counselor.state == "정회원"]
         })
         resp.headers['Access-Control-Allow-Origin'] = '*'
         return resp

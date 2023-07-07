@@ -1,5 +1,5 @@
 from flask import make_response, request
-from flask_restful import Resource, reqparse
+from flask_restx import Resource, reqparse
 from flask_jwt_extended import jwt_required,get_jwt_identity
 from models.chat import ChatModel
 from models.category import CategoryModel,MidCategoryModel
@@ -12,6 +12,7 @@ from models.pre_reservation import PreReservationModel
 from models.post_reservation import PostReservationModel
 from models.user import UserModel
 from models.child import ChildModel
+import datetime
 
 class V2PreReservation(Resource):
 
@@ -44,9 +45,9 @@ class V2PreReservationInfo(Resource):
         response['name'] = child.name
         response['phone'] = user.phone
         response['email'] = user.email
-        response['birth'] = child.birth
-        response['start'] = data.start_time
-        response['date'] = data.date
+        response['birth'] = datetime.datetime.strftime(child.birth,"%Y-%m-%d")
+        response['start'] = datetime.datetime.strftime(data.start_time,"%H:%M:%S")
+        response['date'] = datetime.datetime.strftime(data.date,"%Y-%m-%d")
         response['problem'] = data.problem
 
         resp = make_response({

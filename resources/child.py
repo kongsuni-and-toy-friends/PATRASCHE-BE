@@ -1,5 +1,5 @@
 from flask import make_response
-from flask_restful import Resource, reqparse
+from flask_restx import Resource, reqparse
 from flask_jwt_extended import jwt_required,get_jwt_identity
 from models.child import ChildModel
 from models.record import RecordModel
@@ -28,7 +28,7 @@ class ChildRecordList(Resource):
         records = RecordModel.find_all_by_child_id_with_user_id(child_id,user_id)
 
         resp = make_response({
-            "response": records
+            "response": [record.json() for record in records]
         })
         resp.headers['Access-Control-Allow-Origin'] = '*'
         return resp

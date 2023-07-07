@@ -5,7 +5,7 @@ from .chat import ChatModel
 from .counselor import CounselorModel
 from .availabletime import AvailableTimeModel
 from .career import CareerModel
-from .category import CategoryModel
+from .category import CategoryModel, MidCategoryModel
 from .degree import DegreeModel
 from .doll import DollModel
 from .license import LicenseModel
