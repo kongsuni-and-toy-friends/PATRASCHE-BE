@@ -39,11 +39,9 @@ class Counselor(Resource):
         if data['location'] != None:
             counselors = [counselor for counselor in counselors if counselor.address_range in data['location']]
 
-        resp = make_response({
-            "response":[counselor.json() for counselor in counselors if counselor.state == "정회원"]
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        return {
+            "response": [counselor.json() for counselor in counselors if counselor.state == "정회원"]
+        }
 
 class CounselorInfo(Resource):
 
@@ -54,16 +52,14 @@ class CounselorInfo(Resource):
         licenses = LicenseModel.find_by_counselor_id(counselor_id)
         times = AvailableTimeModel.find_by_counselor_id(counselor_id)
 
-        resp = make_response({
+        return {
             "profile": counselor.json(),
             "intro_title": counselor.intro_title,
             "intro_content": counselor.intro_content,
-            "career":[career.json() for career in careers],
-            "license":[license.json() for license in licenses],
-            "time":[time.json() for time in times]
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+            "career": [career.json() for career in careers],
+            "license": [license.json() for license in licenses],
+            "time": [time.json() for time in times]
+        }
 
 class CounselorTime(Resource):
 
@@ -72,9 +68,7 @@ class CounselorTime(Resource):
         counselor = CounselorModel.find_by_id(counselor_id)
         times = AvailableTimeModel.find_by_counselor_id(counselor_id)
 
-        resp = make_response({
-            "interval":times[0].interval,
-            "time":[time.json() for time in times]
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        return {
+            "interval": times[0].interval,
+            "time": [time.json() for time in times]
+        }

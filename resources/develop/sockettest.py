@@ -1,10 +1,8 @@
 import requests
 from flask_socketio import Namespace, emit, join_room, leave_room, close_room
 from flask import session, request
-from resources import main_ai
 from models.child import ChildModel
 from models.chat import ChatModel
-from models.statistic import StatisticModel, emotion_weight, init_emotion
 from datetime import datetime
 from pytz import timezone
 import json

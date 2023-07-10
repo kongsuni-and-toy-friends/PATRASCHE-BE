@@ -328,9 +328,7 @@ class MakeMock(Resource):
         )
         post_reservation.save_to_db()
 
-        resp = make_response({
+        return {
             "message": "Success"
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        }
 

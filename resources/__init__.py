@@ -1,7 +1,7 @@
 from flask_restx import Namespace
 
 def create_api(api):
-    from .user import UserKakao, UserRegister, UserDupCheck, UserLogin
+    from .auth import UserKakao, UserRegister, UserDupCheck, UserLogin
     from .child import Child,ChildRecordList
     from .record import Chat
     from .counselor import Counselor,CounselorInfo,CounselorTime
@@ -15,6 +15,7 @@ def create_api(api):
 
     # from .reservations import GetCounselors, GetPageInfo,MakeReservation,\
     #     GetUserReservation,GetCounselorReservation, AcceptReservation, RejectReservation,CancleReservation
+
 
     # develop namespace
     ns_develop = api.namespace('develop')
@@ -89,7 +90,10 @@ def create_api(api):
 
 
 def create_socketio(sock):
-    from .chatnamespace import ChatNamespace
-    sock.on_namespace(ChatNamespace('/realchat'))
+    """
+    TODO:
+        something
+
+    """
 
 

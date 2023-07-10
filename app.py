@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from flask_restx import Api,cors
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
 from resources import create_api, create_socketio
@@ -22,6 +23,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = "chan"
 
+CORS(app)
 api = Api(app) #API FLASK SERVER
 
 sock = SocketIO(app,cors_allowed_origins="*")
@@ -74,11 +76,11 @@ def create_tables():
     db.create_all()
 
 create_api(api)
-# create_socketio(sock)
-# CORS(sock)
+create_socketio(sock)
+
 
 if __name__ == "__main__":
     print("Now we Run...")
     db.init_app(app)
-    app.run(host=host,port=port,debug=False) #debug tells us what is problem
-    #sock.run(app,host=host,port=port,debug=False)
+
+    sock.run(app,host=host,port=port,debug=False)

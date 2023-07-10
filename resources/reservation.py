@@ -21,11 +21,9 @@ class PreReservation(Resource):
 
         reservations = PreReservationModel.find_by_user_id(user_id)
 
-        resp = make_response({
-            "response":[reserve.json() for reserve in reservations]
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        return {
+            "response": [reserve.json() for reserve in reservations]
+        }
 
 class PostReservation(Resource):
 
@@ -35,11 +33,9 @@ class PostReservation(Resource):
         user_id = get_jwt_identity()
         reservations = PostReservationModel.find_by_user_id(user_id)
 
-        resp = make_response({
-            "response":[reserve.json() for reserve in reservations]
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        return {
+            "response": [reserve.json() for reserve in reservations]
+        }
 
 class MakeReservation(Resource):
     _parser = reqparse.RequestParser()
@@ -79,9 +75,7 @@ class MakeReservation(Resource):
 
         reservation.save_to_db()
 
-        resp = make_response({
-            "message":"예약이 완료되었습니다."
-        })
-        resp.status_code = 201
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+
+        return {
+            "message": "예약이 완료되었습니다."
+        }

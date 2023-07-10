@@ -12,11 +12,9 @@ class Child(Resource):
         user_id = get_jwt_identity()
         childs = ChildModel.find_all_by_user_id(user_id)
 
-        resp = make_response({
-            "response":[child.json() for child in childs]
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        return {
+            "response": [child.json() for child in childs]
+        }
 
 class ChildRecordList(Resource):
 
@@ -27,8 +25,6 @@ class ChildRecordList(Resource):
 
         records = RecordModel.find_all_by_child_id_with_user_id(child_id,user_id)
 
-        resp = make_response({
+        return {
             "response": [record.json() for record in records]
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        }

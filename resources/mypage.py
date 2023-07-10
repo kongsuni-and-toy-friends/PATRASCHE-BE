@@ -55,11 +55,9 @@ class EnrollChild(Resource):
         doll.name = data['name']
         doll.save_to_db()
 
-        resp = make_response({
-            "message":"Child has been created!"
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        return {
+            "message": "Child has been created!"
+        }
 
 class DollComCheck(Resource):
 
@@ -74,8 +72,6 @@ class DollComCheck(Resource):
 
         records = RecordModel.find_all_by_child_id_with_user_id(child_id,user_id)
 
-        resp = make_response({
+        return {
             "response": records
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        }

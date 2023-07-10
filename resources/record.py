@@ -12,11 +12,9 @@ class Chat(Resource):
 
         chats = ChatModel.find_all_by_user_id_with_record_id(user_id,record_id)
 
-        resp = make_response({
-            "response":[chat.json() for chat in chats]
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        return {
+            "response": [chat.json() for chat in chats]
+        }
 
 # class ChildRecordList(Resource):
 #

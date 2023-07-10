@@ -52,11 +52,9 @@ class UserKakao(Resource):
             access_token = json.loads(((response.text).encode('utf-8')))['access_token']
         except :
             print("No token")
-            resp = make_response({
-                "message":"Invaild token"
-            })
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+            return {
+                "message": "Invaild token"
+            }
 
         response = requests.get(
             url = UserKakao.userme_url,
@@ -78,24 +76,19 @@ class UserKakao(Resource):
             access_token = create_access_token(identity=user.id, fresh=True)
             refresh_token = create_refresh_token(user.id)
 
-            resp = make_response({
-               "registered":True,
-               "access": access_token,
-               "refresh": refresh_token,
-            })
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+            return {
+                "registered": True,
+                "access": access_token,
+                "refresh": refresh_token,
+            }
         else :
-            resp = make_response({
+            return {
                 "registered": False,
                 "email": email,
                 'nickname': name,
                 'birthday': birthday,
                 'gender': gender
-
-            })
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+            }
 
 class UserRegister(Resource):
     _parser = reqparse.RequestParser()
@@ -179,31 +172,26 @@ class UserRegister(Resource):
         access_token = create_access_token(identity=user.id, fresh=True)
         refresh_token = create_refresh_token(user.id)
 
-        resp = make_response({
+        return {
             "message": "User created successfully.",
             "access": access_token,
             "refresh": refresh_token,
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        }
 
 class UserDupCheck(Resource):
     def get(self):
         email = request.args.get("email")
 
         if UserModel.find_by_useremail(email):
-            resp = make_response({
-                "result":False,
-                "message":"이미 가입한 이메일입니다."
-            })
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+
+            return {
+                "result": False,
+                "message": "이미 가입한 이메일입니다."
+            }
         else :
-            resp = make_response({
+            return {
                 "result": True
-            })
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+            }
 
 class User(Resource):
     """
@@ -253,15 +241,11 @@ class UserLogin(Resource):
                 access_token = create_access_token(identity=user.id, fresh=True)
                 refresh_token = create_refresh_token(user.id)
 
-                resp = make_response({
+                return {
                     "access": access_token,
                     "refresh": refresh_token,
-                })
-                resp.headers['Access-Control-Allow-Origin'] = '*'
-                return resp
+                }
 
-        resp = make_response({
+        return {
             "message": "Invalid Credentials!"
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        }

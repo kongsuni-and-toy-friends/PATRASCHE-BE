@@ -54,12 +54,10 @@ class CounselorKakao(Resource):
         try:
             access_token = json.loads(((response.text).encode('utf-8')))['access_token']
         except :
-            print("No token")
-            resp = make_response({
-                "message":"Invaild token"
-            })
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+
+            return {
+                "message": "Invaild token"
+            }
 
         response = requests.get(
             url = CounselorKakao.userme_url,
@@ -81,25 +79,20 @@ class CounselorKakao(Resource):
             access_token = create_access_token(identity=counselor.id, fresh=True)
             refresh_token = create_refresh_token(counselor.id)
 
-            resp = make_response({
-               "registered":True,
-               "access": access_token,
-               "refresh": refresh_token,
-                "state":counselor.state
-            })
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+            return {
+                "registered": True,
+                "access": access_token,
+                "refresh": refresh_token,
+                "state": counselor.state
+            }
         else :
-            resp = make_response({
+            return {
                 "registered": False,
                 "email": email,
                 'nickname': name,
                 'birthday': birthday,
                 'gender': gender
-
-            })
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+            }
 
 class CounselorRegister(Resource):
     _parser = reqparse.RequestParser()
@@ -182,32 +175,27 @@ class CounselorRegister(Resource):
         access_token = create_access_token(identity=counselor.id, fresh=True)
         refresh_token = create_refresh_token(counselor.id)
 
-        resp = make_response({
+        return {
             "message": "Counselor created successfully.",
             "access": access_token,
             "refresh": refresh_token,
             "state": counselor.state
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        }
 
 class CounselorDupCheck(Resource):
     def get(self):
         email = request.args.get("email")
 
         if CounselorModel.find_by_email(email):
-            resp = make_response({
-                "result":False,
-                "message":"이미 가입한 이메일입니다."
-            })
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+
+            return {
+                "result": False,
+                "message": "이미 가입한 이메일입니다."
+            }
         else :
-            resp = make_response({
+            return {
                 "result": True
-            })
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+            }
 
 #
 
@@ -235,19 +223,16 @@ class CounselorLogin(Resource):
                 access_token = create_access_token(identity=counselor.id, fresh=True)
                 refresh_token = create_refresh_token(counselor.id)
 
-                resp = make_response({
+
+                return {
                     "access": access_token,
                     "refresh": refresh_token,
-                    "state":counselor.state
-                })
-                resp.headers['Access-Control-Allow-Origin'] = '*'
-                return resp
+                    "state": counselor.state
+                }
 
-        resp = make_response({
+        return {
             "message": "Invalid Credentials!"
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        }
 
 class CounselorProfile(Resource):
     _parser = reqparse.RequestParser()
@@ -309,11 +294,9 @@ class CounselorProfile(Resource):
 
         counselor.save_to_db()
 
-        resp = make_response({
+        return {
             "message": "Changes has been taken!"
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        }
 
 
 class CounselorApprove(Resource):
@@ -390,11 +373,9 @@ class CounselorApprove(Resource):
             )
             career.save_to_db()
 
-        resp = make_response({
+        return {
             "message": "Request has been taken!"
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        }
 
 #   class User(Resource):
 #     """

@@ -23,11 +23,9 @@ class V2PreReservation(Resource):
 
         reservations = PreReservationModel.find_by_counselor_id(counselor_id)
 
-        resp = make_response({
-            "response":[reserve.json() for reserve in reservations]
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        return {
+            "response": [reserve.json() for reserve in reservations]
+        }
 
 
 class V2PreReservationInfo(Resource):
@@ -50,11 +48,9 @@ class V2PreReservationInfo(Resource):
         response['date'] = datetime.datetime.strftime(data.date,"%Y-%m-%d")
         response['problem'] = data.problem
 
-        resp = make_response({
-            "response":response
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+        return {
+            "response": response
+        }
 
 class PostReservation(Resource):
 
@@ -64,8 +60,7 @@ class PostReservation(Resource):
         user_id = get_jwt_identity()
         reservations = PostReservationModel.find_by_user_id(user_id)
 
-        resp = make_response({
-            "response":[reserve.json() for reserve in reservations]
-        })
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        return resp
+
+        return {
+            "response": [reserve.json() for reserve in reservations]
+        }
