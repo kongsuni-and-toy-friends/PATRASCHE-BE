@@ -180,6 +180,7 @@ class UserRegister(Resource):
             "message": "User created successfully.",
             "access": access_token,
             "refresh": refresh_token,
+            "name":user.name
         }, 201
 
 class UserDupCheck(Resource):
