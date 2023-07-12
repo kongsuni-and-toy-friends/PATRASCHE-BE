@@ -23,10 +23,10 @@ class UserKakao(Resource):
                          )
 
     token_server = "https://kauth.kakao.com/oauth/token"
-    restapi_key = "30be85e022d05515820202ecfdc05f9f"
+    restapi_key = "cfe89bc232781d31c8bc26d93dd746fe"
     redirect_url = "http://localhost:5173/kakao"
     userme_url = "https://kapi.kakao.com/v2/user/me"
-    client_secret = "CU8A7GzamnuZmc67H3l8ptZ3jdHJK0Et"
+    client_secret = "mgN9eDJYxpbHxdtcrh1M2o4qYRzDJKkS"
 
     def post(self):
 
@@ -47,14 +47,14 @@ class UserKakao(Resource):
                 "code": code,
             }
         )
-
+        print((response.text).encode('utf-8'))
         try:
             access_token = json.loads(((response.text).encode('utf-8')))['access_token']
         except :
             print("No token")
             return {
                 "message": "Invaild token"
-            }
+            }, 400
 
         response = requests.get(
             url = UserKakao.userme_url,
@@ -63,13 +63,15 @@ class UserKakao(Resource):
             }
         )
         user_data = json.loads(((response.text).encode('utf-8')))['kakao_account']
-        user_profile = user_data['profile']
+        #print(user_data)
+        # user_profile = user_data['profile']
 
-        name = user_profile['nickname']
+        name = user_data['name']
         email = user_data["email"]
-        birthday = user_data["birthday"]
-        gender = user_data['gender']
+        birth = f"{user_data['birthyear']}-{user_data['birthday'][:2]}-{user_data['birthday'][2:]}"
 
+        phone = "0" + user_data["phone_number"].split(" ")[1]
+        gender = user_data['gender']
         user = UserModel.find_by_useremail(email)
 
         if user:
@@ -77,18 +79,22 @@ class UserKakao(Resource):
             refresh_token = create_refresh_token(user.id)
 
             return {
-                "registered": True,
+                "registered":True,
                 "access": access_token,
                 "refresh": refresh_token,
+                "name":user.name
             }
         else :
-            return {
+            return{
                 "registered": False,
-                "email": email,
-                'nickname': name,
-                'birthday': birthday,
-                'gender': gender
+                "name":name,
+                "email":email,
+                "gender":gender,
+                "birth":birth,
+                "phone":phone,
+                "provider":"kakao"
             }
+
 
 class UserRegister(Resource):
     _parser = reqparse.RequestParser()
@@ -144,11 +150,9 @@ class UserRegister(Resource):
         user = UserModel.find_by_useremail(data['email'])
 
         if user:
-            resp = make_response({
+            return {
                 "message": f"Email {data['email']} had been taken!"
-            })
-            resp.headers['Access-Control-Allow-Origin'] = '*'
-            return resp
+            }, 409
 
         user = UserModel(
             data['name'],
@@ -176,7 +180,7 @@ class UserRegister(Resource):
             "message": "User created successfully.",
             "access": access_token,
             "refresh": refresh_token,
-        }
+        }, 201
 
 class UserDupCheck(Resource):
     def get(self):
@@ -187,11 +191,11 @@ class UserDupCheck(Resource):
             return {
                 "result": False,
                 "message": "이미 가입한 이메일입니다."
-            }
+            }, 409
         else :
             return {
                 "result": True
-            }
+            }, 200
 
 class User(Resource):
     """
@@ -244,8 +248,9 @@ class UserLogin(Resource):
                 return {
                     "access": access_token,
                     "refresh": refresh_token,
-                }
+                    "name": user.name
+                }, 200
 
         return {
-            "message": "Invalid Credentials!"
-        }
+            "message": "이메일 또는 비밀번호가 잘못되었습니다."
+        }, 400

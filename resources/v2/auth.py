@@ -26,10 +26,10 @@ class CounselorKakao(Resource):
                          )
 
     token_server = "https://kauth.kakao.com/oauth/token"
-    restapi_key = "30be85e022d05515820202ecfdc05f9f"
+    restapi_key = "cfe89bc232781d31c8bc26d93dd746fe"
     redirect_url = "http://localhost:5173/kakao"
     userme_url = "https://kapi.kakao.com/v2/user/me"
-    client_secret = "CU8A7GzamnuZmc67H3l8ptZ3jdHJK0Et"
+    client_secret = "mgN9eDJYxpbHxdtcrh1M2o4qYRzDJKkS"
 
     def post(self):
 
@@ -66,11 +66,11 @@ class CounselorKakao(Resource):
             }
         )
         user_data = json.loads(((response.text).encode('utf-8')))['kakao_account']
-        user_profile = user_data['profile']
-
-        name = user_profile['nickname']
+        name = user_data['name']
         email = user_data["email"]
-        birthday = user_data["birthday"]
+        birth = f"{user_data['birthyear']}-{user_data['birthday'][:2]}-{user_data['birthday'][2:]}"
+
+        phone = "0" + user_data["phone_number"].split(" ")[1]
         gender = user_data['gender']
 
         counselor = CounselorModel.find_by_email(email)
@@ -83,15 +83,18 @@ class CounselorKakao(Resource):
                 "registered": True,
                 "access": access_token,
                 "refresh": refresh_token,
-                "state": counselor.state
+                "state": counselor.state,
+                "name":counselor.name
             }
         else :
             return {
                 "registered": False,
-                "email": email,
-                'nickname': name,
-                'birthday': birthday,
-                'gender': gender
+                "name":name,
+                "email":email,
+                "gender":gender,
+                "birth":birth,
+                "phone":phone,
+                "provider":"kakao"
             }
 
 class CounselorRegister(Resource):
