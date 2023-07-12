@@ -47,7 +47,7 @@ class UserKakao(Resource):
                 "code": code,
             }
         )
-        print((response.text).encode('utf-8'))
+
         try:
             access_token = json.loads(((response.text).encode('utf-8')))['access_token']
         except :

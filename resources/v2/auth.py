@@ -323,7 +323,7 @@ class CounselorApprove(Resource):
     @jwt_required()
     def post(self):
         data = request.get_json()
-        print(data)
+
         counselor_id = get_jwt_identity()
 
         counselor = CounselorModel.find_by_id(counselor_id)

@@ -24,7 +24,7 @@ app.config['PROPAGATE_EXCEPTIONS'] = True
 app.secret_key = "chan"
 
 CORS(app)
-api = Api(app,prefix='/api') #API FLASK SERVER
+api = Api(app) #API FLASK SERVER
 
 sock = SocketIO(app,cors_allowed_origins="*")
 
