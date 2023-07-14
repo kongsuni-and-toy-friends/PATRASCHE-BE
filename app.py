@@ -5,26 +5,44 @@ from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
 from resources import create_api, create_socketio
 import os
-
+import xml.etree.ElementTree as elemTree
+from datetime import timedelta
 from db import db
 
 #SECRET_KEY = config['DEFAULT']['SECRET_KEY']
 #db_name = config['DEFAULT']['DB_NAME']+'.db'
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./config/swm-pat.json"
 
-
 host = "0.0.0.0"
 port = 5000
+expire_duration = 1
 
-SECRET_KEY = "chan"
-db_name="chatbot"
+tree = elemTree.parse('config/keys.xml')
+secretkey = tree.find('string[@name="secret_key"]').text
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+db_name
+app.secret_key = secretkey
+db_info = {
+    "user": tree.find('string[@name="DB_USER"]').text,
+    "password": tree.find('string[@name="DB_PASS"]').text,
+    "host": tree.find('string[@name="DB_HOST"]').text,
+    "port": tree.find('string[@name="DB_PORT"]').text,
+    "database": tree.find('string[@name="DB_DBNAME"]').text
+}
+
+
+app.config['JWT_SECRET_KEY'] = secretkey
+app.config[
+     'SQLALCHEMY_DATABASE_URI'] = f"mysql://{db_info['user']}:{db_info['password']}@{db_info['host']}:{db_info['port']}/{db_info['database']}"
+#app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///test"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_POOL_RECYCLE'] = 499
+app.config['SQLALCHEMY_POOL_TIMEOUT'] = 20
+
 app.config['PROPAGATE_EXCEPTIONS'] = True
-app.secret_key = "chan"
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=expire_duration)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=180)
 
 CORS(app)
 api = Api(app) #API FLASK SERVER
