@@ -1,4 +1,4 @@
-Flask
+Flask~=2.2.2
 Flask-JWT-extended
 Flask-RESTful
 Flask-SQLAlchemy
@@ -9,4 +9,9 @@ Flask-restx
 pandas
 numpy
 tqdm
-eventlet
+eventlet~=0.33.1
+google-cloud-storage
+google-cloud-core
+sqlalchemy~=1.4.22
+requests~=2.26.0
+pytz~=2021.3

@@ -4,11 +4,14 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_socketio import SocketIO
 from resources import create_api, create_socketio
+import os
 
 from db import db
 
 #SECRET_KEY = config['DEFAULT']['SECRET_KEY']
 #db_name = config['DEFAULT']['DB_NAME']+'.db'
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./config/swm-pat.json"
+
 
 host = "0.0.0.0"
 port = 5000
@@ -76,11 +79,11 @@ def create_tables():
     db.create_all()
 
 create_api(api)
-create_socketio(sock)
+#create_socketio(sock)
 
 
 if __name__ == "__main__":
     print("Now we Run...")
     db.init_app(app)
-
-    sock.run(app,host=host,port=port,debug=False)
+    app.run(host=host,port=port,debug=False)
+    #sock.run(app,host=host,port=port,debug=False)
