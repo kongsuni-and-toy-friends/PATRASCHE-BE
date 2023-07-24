@@ -16,3 +16,4 @@ sqlalchemy~=1.4.22
 requests~=2.26.0
 pytz~=2021.3
 mysqlclient
+opencv-python

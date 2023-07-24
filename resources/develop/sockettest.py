@@ -7,6 +7,8 @@ from datetime import datetime
 from pytz import timezone
 import json
 import eventlet
+import numpy as np
+import cv2
 from google.cloud import speech
 
 STREAMING_LIMIT = 240000 # 4 minutes
@@ -38,10 +40,6 @@ class TestSocket(Namespace):
         print("Client disconnected")
         #sessioned = session.get()
 
-    def on_join(self,data):
-        print("On Join")
-
-
     def on_audio(self,data):
         requests = (
             speech.StreamingRecognizeRequest(audio_content=data['content'])
@@ -62,4 +60,6 @@ class TestSocket(Namespace):
             else:
                 print("Interim transcript: {}".format(transcript))
 
-
+    def on_camera(self,data):
+        frame = np.array(data['frame'])
+        frame = cv2.imdecode(np.fromiter(frame, np.uint8), cv2.IMREAD_COLOR)
