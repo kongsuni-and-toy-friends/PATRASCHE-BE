@@ -36,7 +36,7 @@ def create_api(api):
 
     # child namespace
     ns_child = api.namespace('child')
-    ns_child.add_resource(Child, '/list')
+    ns_child.add_resource(Child, '')
     ns_child.add_resource(ChildRecordList, '/<int:child_id>/records')
     # api.add_resource(Child, '/child')
     # api.add_resource(ChildList, '/childs')
@@ -52,7 +52,7 @@ def create_api(api):
 
     # counselors namespace
     ns_counselor = api.namespace('counselor')
-    ns_counselor.add_resource(Counselor, '/list')
+    ns_counselor.add_resource(Counselor, '')
     ns_counselor.add_resource(CounselorInfo, '/<int:counselor_id>')
     ns_counselor.add_resource(CounselorTime, '/<int:counselor_id>/time')
     # api.add_resource(GetCounselors, '/consultings')
