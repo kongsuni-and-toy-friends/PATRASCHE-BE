@@ -4,7 +4,7 @@ def create_api(api):
     from .auth import UserKakao, UserRegister, UserDupCheck, UserLogin
     from .child import Child,ChildRecordList
     from .record import Chat
-    from .counselor import Counselor,CounselorInfo,CounselorTime
+    from .counselor import Counselor,CounselorInfo,CounselorTimeAvailability
     from .reservation import PreReservation, PostReservation, MakeReservation
     from .v2.auth import CounselorRegister, CounselorApprove, CounselorProfile, CounselorLogin, CounselorKakao, CounselorDupCheck
     from .v2.reservation import V2PreReservation,V2PreReservationInfo
@@ -54,7 +54,7 @@ def create_api(api):
     ns_counselor = api.namespace('counselor')
     ns_counselor.add_resource(Counselor, '')
     ns_counselor.add_resource(CounselorInfo, '/<int:counselor_id>')
-    ns_counselor.add_resource(CounselorTime, '/<int:counselor_id>/time')
+    ns_counselor.add_resource(CounselorTimeAvailability, '/<int:counselor_id>/time')
     # api.add_resource(GetCounselors, '/consultings')
     # api.add_resource(GetPageInfo, '/consulting/page/<int:id>')
 

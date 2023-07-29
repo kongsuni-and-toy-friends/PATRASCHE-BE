@@ -10,37 +10,58 @@ from models.record import RecordModel
 from models.counselor import CounselorModel
 
 class Counselor(Resource):
+
+    COUNSELOR_DATA_KEY_CATEGORY = "category"
+    COUNSELOR_DATA_KEY_LOCATION = "location"
+    COUNSELOR_MEMBERSHIP_TYPE_VERIFIED = "정회원"
+    """
+    TODO:
+        여기는 ~~하는곳
+    """
     _parser = reqparse.RequestParser()
-    _parser.add_argument('category',
+    _parser.add_argument(COUNSELOR_DATA_KEY_CATEGORY,
                          type=str,
                          required=False,
                          action='append'
                          )
-    _parser.add_argument('location',
+    _parser.add_argument(COUNSELOR_DATA_KEY_LOCATION,
                          type=str,
                          required=False,
                          action='append'
                          )
+
+
+    @staticmethod
+    def filter_by_category(category):
+
+        if category != None:
+            categories = CategoryModel.find_all_by_list_name(category)
+            categories_id = [category.id for category in categories]
+
+            counselors_id = [mid_category.counselor_id for mid_category in
+                             MidCategoryModel.find_by_id_with_list_category_id(categories_id)]
+            counselors_id.count(10)
+            counselors_id = set(counselors_id)
+
+            return [CounselorModel.find_by_id(counselor) for counselor in counselors_id]
+        else:
+            return CounselorModel.find_all()
+
+
+    @staticmethod
+    def filter_by_location(counselors,location):
+        return [counselor for counselor in counselors if counselor.address_range in location]
+
     def get(self):
         data = Counselor._parser.parse_args()
 
-        if data['category'] != None:
+        counselors_by_category = Counselor.filter_by_category(data[Counselor.COUNSELOR_DATA_KEY_CATEGORY])
 
-            categories = CategoryModel.find_all_by_list_name(data['category'])
-            categories_id = [cate.id for cate in categories]
-
-            counselors_id = [mcate.counselor_id for mcate in MidCategoryModel.find_by_id_with_list_category_id(categories_id)]
-            counselors_id = set(counselors_id)
-
-            counselors = [CounselorModel.find_by_id(counselor) for counselor in counselors_id]
-        else :
-            counselors = CounselorModel.find_all()
-
-        if data['location'] != None:
-            counselors = [counselor for counselor in counselors if counselor.address_range in data['location']]
+        if data[Counselor.COUNSELOR_DATA_KEY_LOCATION] != None:
+            counselors = Counselor.filter_by_location(counselors_by_category,data[Counselor.COUNSELOR_DATA_KEY_LOCATION])
 
         return {
-            "response": [counselor.json() for counselor in counselors if counselor.state == "정회원"]
+            "response": [counselor.json() for counselor in counselors if counselor.state == Counselor.COUNSELOR_MEMBERSHIP_TYPE_VERIFIED]
         }
 
 class CounselorInfo(Resource):
@@ -61,11 +82,10 @@ class CounselorInfo(Resource):
             "time": [time.json() for time in times]
         }
 
-class CounselorTime(Resource):
+class CounselorTimeAvailability(Resource):
 
     def get(self,counselor_id):
 
-        counselor = CounselorModel.find_by_id(counselor_id)
         times = AvailableTimeModel.find_by_counselor_id(counselor_id)
 
         return {

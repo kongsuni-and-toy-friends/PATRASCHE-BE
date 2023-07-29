@@ -1,0 +1,3 @@
+[submodule "AI"]
+	path = AI
+	url = https://github.com/kongsuni-and-toy-friends/PATRASCHE-AI.git
