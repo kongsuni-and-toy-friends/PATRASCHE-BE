@@ -33,7 +33,7 @@ class TestSocket(Namespace):
             print(f"Now {datetime.now().strftime('%H %M %S.%f')} Received {time_stamp}")
 
 
-        # print(frame.shape)
-        frame = cv2.imdecode(np.fromiter(frame, np.uint8), cv2.IMREAD_COLOR)
-        cv2.imshow("img",frame)
-        cv2.waitKey(1)
+        # # print(frame.shape)
+        # frame = cv2.imdecode(np.fromiter(frame, np.uint8), cv2.IMREAD_COLOR)
+        # cv2.imshow("img",frame)
+        # cv2.waitKey(1)
