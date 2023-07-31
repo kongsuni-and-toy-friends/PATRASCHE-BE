@@ -90,9 +90,9 @@ def create_api(api):
 
 
 def create_socketio(sock):
-    from .develop.sockettest import TestSocket
+    from .socket.test import TestSocket
 
     #TEST
-    sock.on_namespace(TestSocket('/realtime/test'))
+    sock.on_namespace(TestSocket('/realtime'))
 
 

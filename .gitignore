@@ -2,7 +2,7 @@
 
 chatbot
 
-/.idea
+.idea
 /__pycache__
 /config/*.json
 /config/*.xml

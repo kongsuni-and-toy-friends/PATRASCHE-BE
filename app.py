@@ -97,11 +97,11 @@ def create_tables():
     db.create_all()
 
 create_api(api)
-#create_socketio(sock)
+create_socketio(sock)
 
 
 if __name__ == "__main__":
     print("Now we Run...")
     db.init_app(app)
     #app.run(host=host,port=port,debug=False)
-    sock.run(app,host=host,port=port,debug=False)
+    sock.run(app,host=host, port=port,debug=False)
