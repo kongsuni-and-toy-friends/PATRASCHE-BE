@@ -9,7 +9,6 @@ import json
 import eventlet
 import cv2
 import numpy as np
-import torch
 
 cnt = 0
 class TestSocket(Namespace):
