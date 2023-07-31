@@ -59,7 +59,8 @@ class Counselor(Resource):
 
         if data[Counselor.COUNSELOR_DATA_KEY_LOCATION] != None:
             counselors = Counselor.filter_by_location(counselors_by_category,data[Counselor.COUNSELOR_DATA_KEY_LOCATION])
-
+        else :
+            counselors = counselors_by_category
         return {
             "response": [counselor.json() for counselor in counselors if counselor.state == Counselor.COUNSELOR_MEMBERSHIP_TYPE_VERIFIED]
         }

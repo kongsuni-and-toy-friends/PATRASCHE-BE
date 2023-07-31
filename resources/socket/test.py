@@ -9,6 +9,7 @@ import json
 import eventlet
 import cv2
 import numpy as np
+import torch
 
 cnt = 0
 class TestSocket(Namespace):
@@ -28,9 +29,13 @@ class TestSocket(Namespace):
         frame = np.array(data['frame'])
         time_stamp = data['ts']
 
+        ret = model(frame)
+
         cnt+=1
         if not cnt % 15 :
             print(f"Now {datetime.now().strftime('%H %M %S.%f')} Received {time_stamp}")
+
+
 
 
         # # print(frame.shape)
