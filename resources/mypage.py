@@ -39,14 +39,15 @@ class EnrollChild(Resource):
         user_id = get_jwt_identity()
 
         data = EnrollChild._parser.parse_args()
-
+        print(f"TN: {data['thumbnail']}")
         child = ChildModel(
             user_id,
             data['name'],
             data['birth'],
             data['gender'],
+            datetime.datetime.now(),
             data['thumbnail'],
-            datetime.datetime.now()
+
         )
         child.save_to_db()
 

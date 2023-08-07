@@ -8,7 +8,9 @@ def create_api(api):
     from .reservation import PreReservation, PostReservation, MakeReservation
     from .v2.auth import CounselorRegister, CounselorApprove, CounselorProfile, CounselorLogin, CounselorKakao, CounselorDupCheck
     from .v2.reservation import V2PreReservation,V2PreReservationInfo
-    from .develop.develop import MakeMock
+    from .develop.mock import MakeMock
+    from .develop.movie import UploadMovie,UploadSepMovie
+    from .develop.chat import RecvMsg
     from .mypage import EnrollChild,DollComCheck
     # from main_page import MainBanner
     # from .chat import RangeChatList, AllChatList,YMDChatList,NumberChatList
@@ -20,6 +22,9 @@ def create_api(api):
     # develop namespace
     ns_develop = api.namespace('develop')
     ns_develop.add_resource(MakeMock,'/make_mock')
+    ns_develop.add_resource(UploadMovie, '/upload')
+    ns_develop.add_resource(UploadSepMovie, '/upload_separate')
+    ns_develop.add_resource(RecvMsg, '/test_msg')
 
     # auth namespace
     ns_auth = api.namespace('auth')

@@ -40,7 +40,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_POOL_RECYCLE'] = 499
 app.config['SQLALCHEMY_POOL_TIMEOUT'] = 20
 
-app.config['PROPAGATE_EXCEPTIONS'] = True
+app.config['PROPAGATE_EXCEPTIONS'] = False
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=expire_duration)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=180)
 
@@ -91,6 +91,11 @@ jwt = JWTManager(app) #this will make endpoint named '/auth' (username,password)
 @app.route('/health')
 def health():
     return "OK"
+
+@app.errorhandler(500)
+def internal_error(error):
+
+    return "500 error"
 
 @app.before_request
 def create_tables():
