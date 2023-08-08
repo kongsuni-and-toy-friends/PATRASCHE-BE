@@ -11,6 +11,9 @@ class Child(Resource):
     def get(self):
         user_id = get_jwt_identity()
         childs = ChildModel.find_all_by_user_id(user_id)
+        for child in childs:
+            print(child.name)
+            print(child.id)
 
         return {
             "response": [child.json() for child in childs]

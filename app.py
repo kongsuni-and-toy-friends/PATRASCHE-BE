@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template, send_from_directory
 from flask_restx import Api,cors
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -100,6 +100,14 @@ def internal_error(error):
 @app.before_request
 def create_tables():
     db.create_all()
+
+# @app.route("/index")
+# def my_index():
+#     return render_template("index.html")
+
+@app.route('/index')
+def my_index():
+  return render_template('index.html')
 
 create_api(api)
 create_socketio(sock)

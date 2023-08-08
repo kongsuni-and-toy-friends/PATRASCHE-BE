@@ -40,6 +40,11 @@ class EnrollChild(Resource):
 
         data = EnrollChild._parser.parse_args()
         print(f"TN: {data['thumbnail']}")
+
+        doll = DollModel.find_by_pin(data['pin'])
+        if not doll :
+            return {"message":f"There is no doll whose pin number is {data['pin']}"},403
+
         child = ChildModel(
             user_id,
             data['name'],
@@ -54,6 +59,7 @@ class EnrollChild(Resource):
         doll = DollModel.find_by_pin(data['pin'])
         doll.child_id = child.id
         doll.name = data['name']
+        print(doll.name)
         doll.save_to_db()
 
         return {
