@@ -2,7 +2,7 @@ from flask_restx import Namespace
 
 def create_api(api):
     from .auth import UserKakao, UserRegister, UserDupCheck, UserLogin
-    from .child import Child,ChildRecordList
+    from .child import Child,ChildRecordList, ChildInfo
     from .record import Chat
     from .counselor import Counselor,CounselorInfo,CounselorTimeAvailability
     from .reservation import PreReservation, PostReservation, MakeReservation
@@ -42,6 +42,7 @@ def create_api(api):
     # child namespace
     ns_child = api.namespace('child')
     ns_child.add_resource(Child, '')
+    ns_child.add_resource(ChildInfo, '/<int:child_id>')
     ns_child.add_resource(ChildRecordList, '/<int:child_id>/records')
     # api.add_resource(Child, '/child')
     # api.add_resource(ChildList, '/childs')
@@ -72,7 +73,7 @@ def create_api(api):
     # mypage namespace
     ns_mypage = api.namespace('mypage')
     ns_mypage.add_resource(EnrollChild, '/enroll')
-    ns_mypage.add_resource(DollComCheck,'/dollcheck')
+    ns_mypage.add_resource(DollComCheck,'/doll_check')
 
     # v2 auth namespace
     # #ns_auth.add_resource(UserKakao, '/kakao')

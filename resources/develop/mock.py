@@ -58,6 +58,26 @@ class MakeMock(Resource):
         )
         doll.save_to_db()
 
+        doll = DollModel(
+
+            "12345",
+            "주인없는 파트라슈2",
+        )
+        doll.save_to_db()
+
+        doll = DollModel(
+
+            "1111",
+            "주인없는 파트라슈3",
+        )
+        doll.save_to_db()
+        doll = DollModel(
+
+            "2222",
+            "주인없는 파트라슈4",
+        )
+        doll.save_to_db()
+
         # make test record
         record = RecordModel(
             child.id,

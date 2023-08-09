@@ -1,4 +1,4 @@
-from flask import make_response
+from flask import make_response, request
 from flask_restx import Resource, reqparse
 from flask_jwt_extended import jwt_required,get_jwt_identity
 from models.child import ChildModel
@@ -73,12 +73,25 @@ class DollComCheck(Resource):
         소켓통신으로 인형과 연결되었는지 확인하는 로직이 필요함!
     """
     @jwt_required()
-    def get(self,child_id):
+    def get(self):
 
         user_id = get_jwt_identity()
+        pin = request.args.get("pin")
+        doll = DollModel.find_by_pin(pin)
 
-        records = RecordModel.find_all_by_child_id_with_user_id(child_id,user_id)
+        if not doll :
+            return {
+                "response" : False,
+                "message" : f"핀 번호 {pin} 은 존재하지 않습니다."
+            }, 400
+
+        if doll.child_id :
+           return {
+               "response" : False,
+               "message" : f"핀 번호 {pin} 은 이미 사용중 입니다."
+           }, 400
+
 
         return {
-            "response": records
+            "response": True
         }
