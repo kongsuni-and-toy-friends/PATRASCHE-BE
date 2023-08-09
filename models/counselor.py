@@ -60,7 +60,11 @@ class CounselorModel(db.Model):
         categories_id = [content.category_id for content in self.mid_categories]
         categories = CategoryModel.find_by_ids(categories_id)
 
-        print(categories)
+        times = dict()
+
+        for time in self.available_times:
+            times[time.day] = time.json()
+
         return {
                 'id':self.id,
                 'name':self.name,
@@ -68,7 +72,7 @@ class CounselorModel(db.Model):
                 'score': score,
                 'category':[cate.name for cate in categories],
                 'location':self.address,
-                'time': [time.json() for time in self.available_times]
+                'time': times
             }
 
 

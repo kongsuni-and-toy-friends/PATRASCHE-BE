@@ -23,7 +23,7 @@ class AvailableTimeModel(db.Model):
 
     def json(self):
         return {
-                'day': self.day,
+                # 'day': self.day,
                 'start': datetime.datetime.strftime(self.start_time,"%H:%M:%S"),
                 'end':datetime.datetime.strftime(self.end_time,"%H:%M:%S")
                 }

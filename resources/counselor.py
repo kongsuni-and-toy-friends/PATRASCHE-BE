@@ -72,7 +72,12 @@ class CounselorInfo(Resource):
         counselor = CounselorModel.find_by_id(counselor_id)
         careers = CareerModel.find_by_counselor_id(counselor_id)
         licenses = LicenseModel.find_by_counselor_id(counselor_id)
-        times = AvailableTimeModel.find_by_counselor_id(counselor_id)
+        available_times = AvailableTimeModel.find_by_counselor_id(counselor_id)
+
+        times = dict()
+
+        for time in available_times:
+            times[time.day] = time.json()
 
         return {
             "profile": counselor.json(),
@@ -80,16 +85,21 @@ class CounselorInfo(Resource):
             "intro_content": counselor.intro_content,
             "career": [career.json() for career in careers],
             "license": [license.json() for license in licenses],
-            "time": [time.json() for time in times]
+            "time": times
         }
 
 class CounselorTimeAvailability(Resource):
 
     def get(self,counselor_id):
 
-        times = AvailableTimeModel.find_by_counselor_id(counselor_id)
+        available_times = AvailableTimeModel.find_by_counselor_id(counselor_id)
+
+        times = dict()
+
+        for time in available_times:
+            times[time.day] = time.json()
 
         return {
-            "interval": times[0].interval,
-            "time": [time.json() for time in times]
+            "interval": available_times[0].interval,
+            "time": times
         }
