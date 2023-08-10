@@ -83,13 +83,13 @@ class DollComCheck(Resource):
             return {
                 "response" : False,
                 "message" : f"핀 번호 {pin} 은 존재하지 않습니다."
-            }, 400
+            }
 
         if doll.child_id :
            return {
                "response" : False,
                "message" : f"핀 번호 {pin} 은 이미 사용중 입니다."
-           }, 400
+           }
 
 
         return {
