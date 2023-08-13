@@ -52,13 +52,12 @@ class EnrollChild(Resource):
             data['gender'],
             datetime.datetime.now(),
             data['thumbnail'],
-
         )
         child.save_to_db()
 
         doll = DollModel.find_by_pin(data['pin'])
         doll.child_id = child.id
-        doll.name = data['name']
+        doll.name = data['doll']
         print(doll.name)
         doll.save_to_db()
 

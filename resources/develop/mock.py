@@ -145,8 +145,6 @@ class MakeMock(Resource):
         )
         category.save_to_db()
 
-
-
         # make 준회원 counselor
         counselor=CounselorModel(
             "이준회",

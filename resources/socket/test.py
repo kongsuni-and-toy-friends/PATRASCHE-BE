@@ -11,11 +11,11 @@ import cv2
 import numpy as np
 
 cnt = 0
+
 class TestSocket(Namespace):
 
     def on_connect(self):
         print("Client connected")
-
         #sessioned= session.get()
 
     def on_disconnect(self):
@@ -28,7 +28,7 @@ class TestSocket(Namespace):
         frame = np.array(data['frame'])
         time_stamp = data['ts']
 
-        ret = model(frame)
+        # ret = model(frame)
 
         cnt+=1
         if not cnt % 15 :
